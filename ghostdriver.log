@@ -1,0 +1,173 @@
+[INFO  - 2018-05-26T14:29:25.870Z] GhostDriver - Main - running on port 55540
+[INFO  - 2018-05-26T14:29:26.810Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.settings - {"XSSAuditingEnabled":false,"javascriptCanCloseWindows":true,"javascriptCanOpenWindows":true,"javascriptEnabled":true,"loadImages":true,"localToRemoteUrlAccessEnabled":false,"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X) AppleWebKit/538.1 (KHTML, like Gecko) PhantomJS/2.1.1 Safari/538.1","webSecurityEnabled":true}
+[INFO  - 2018-05-26T14:29:26.810Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.customHeaders:  - {}
+[INFO  - 2018-05-26T14:29:26.810Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - Session.negotiatedCapabilities - {"browserName":"phantomjs","version":"2.1.1","driverName":"ghostdriver","driverVersion":"1.2.0","platform":"mac-unknown-64bit","javascriptEnabled":true,"takesScreenshot":true,"handlesAlerts":false,"databaseEnabled":false,"locationContextEnabled":false,"applicationCacheEnabled":false,"browserConnectionEnabled":false,"cssSelectorsEnabled":true,"webStorageEnabled":false,"rotatable":false,"acceptSslCerts":false,"nativeEvents":true,"proxy":{"proxyType":"direct"}}
+[INFO  - 2018-05-26T14:29:26.810Z] SessionManagerReqHand - _postNewSessionCommand - New Session Created: 3176bc50-60f1-11e8-8227-0f0e988d4372
+[ERROR - 2018-05-26T14:29:29.332Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Error in require callback:  ReferenceError: Can't find variable: Map
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:29.333Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the 'maps/v3/cardController' AMD module due to missing dependencies: maps/v3/carouselController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the 'maps/v3/carouselController' AMD module
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the 'maps/v3/pinsWidgetController' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_current_attraction_pin/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.442Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_hotel_card/handlers' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_card_compact/handlers' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_attractions_nearby_pins/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_restaurants_nearby_pins/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_hotels_nearby_pins/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_carousel/handlers' AMD module due to missing dependencies: maps/v3/carouselController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prp/responsive_map/handlers' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:30.443Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:46.723Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Error in require callback:  ReferenceError: Can't find variable: Map
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:46.723Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.458Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the 'maps/v3/cardController' AMD module due to missing dependencies: maps/v3/carouselController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the 'maps/v3/carouselController' AMD module
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the 'maps/v3/pinsWidgetController' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_current_attraction_pin/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_hotel_card/handlers' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_card_compact/handlers' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.459Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_attractions_nearby_pins/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.460Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.460Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_restaurants_nearby_pins/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.460Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.460Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_hotels_nearby_pins/handlers' AMD module due to missing dependencies: maps/v3/pinsWidgetController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.460Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.460Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prw/maps_carousel/handlers' AMD module due to missing dependencies: maps/v3/carouselController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.460Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.461Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - msg: Page 'load' event fired but we have not resolved the '$prp/responsive_map/handlers' AMD module due to missing dependencies: maps/v3/cardController
+
+  phantomjs://platform/console++.js:263 in error
+[ERROR - 2018-05-26T14:29:47.461Z] Session [3176bc50-60f1-11e8-8227-0f0e988d4372] - page.onError - stack:
+  L (https://static.tacdn.com/js3/tripadvisor-c-v22924305025b.js:1)
+
+  phantomjs://platform/console++.js:263 in error
