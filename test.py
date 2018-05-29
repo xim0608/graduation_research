@@ -52,53 +52,33 @@ def press_more_content(browser, wait):
 
 
 def get_page_by_sel(browser, url, first_page=False):
-    # options = FirefoxOptions()
-    # options.add_argument("-headless")
-    # browser = webdriver.Firefox()
     print(url)
     wait = WebDriverWait(browser, delay)
     browser.get(url)
     browser.implicitly_wait(3)
     num = get_review_volume(browser, wait, first_page)
-
     check_invisible_loading_shade(wait)
-
     press_more_content(browser, wait)
-    # try:
-    #     more_content_buttons = browser.find_elements_by_css_selector('span.taLnk.ulBlueLinks')
-    #     # more_content_buttons = browser.find_elements_by_xpath('//span[contains(text(), "さらに表示")]')
-    #     print(more_content_buttons)
-    #     if more_content_buttons:
-    #         for button in more_content_buttons:
-    #             button.click()
-    #             invisible_loading_shade = EC.invisibility_of_element_located(
-    #                 (By.XPATH, "//div[contains(@class, 'loadingShade') not contains(@class, 'hidden')]")
-    #             )
-    #             wait.until(invisible_loading_shade)
-    #             print(button.text)
-    # except StaleElementReferenceException as s_e:
-    #     print("error")
-    #     print(s_e)
-    # except WebDriverException as w_e:
-    #     print('webdriverexception')
-    #     print(w_e)
     try:
         invisible_more_content = EC.invisibility_of_element_located(
-            (By.XPATH, '//span[contains(text(), "さらに表示") and contains(@class, "taLnk")]'))
+            (By.XPATH, '//span[contains(text(), "さらに表示") and @class="taLnk ulBlueLinks"]'))
         wait.until(invisible_more_content)
     except TimeoutException:
         press_more_content(browser, wait)
 
     elements = browser.find_elements_by_css_selector('.review.hsx_review')
+    reviews = []
     for element in elements:
-        print("uid : {}".format(element.find_element_by_class_name('memberOverlayLink').get_attribute('id')))
-        print("username : {}".format(element.find_element_by_class_name('username').text))
-        print("title : {}".format(element.find_element_by_class_name('noQuotes').text))
-        print("content: {}".format(element.find_element_by_class_name('partial_entry').text))
+        uid = element.find_element_by_class_name('memberOverlayLink').get_attribute('id')
+        title = element.find_element_by_class_name('noQuotes').text
+        content = element.find_element_by_class_name('partial_entry').text
         rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
-        print("star: {}".format(rating))
-    # browser.close()
-    return num
+        print("uid : {}".format(uid))
+        print("title : {}".format(title))
+        print("content: {}".format(content))
+        print("rating: {}".format(rating))
+        reviews.append({"uid": uid, "title": title, "content": content, "rating": rating})
+    return num, reviews
 
 
 def make_list(url, num):
@@ -110,25 +90,27 @@ def make_list(url, num):
 
 if __name__ == '__main__':
     options = ChromeOptions()
-    # options.add_argument('--headless')
-    # options.add_argument('--remote-debugging-port=9222')
+    options.add_argument('--user-agent=' + user_agent)
+    options.add_argument('--headless')
     browser = Chrome(options=options)
-    # num = 10
-    # browser.implicitly_wait(1)
     url = 'https://www.tripadvisor.jp/Attraction_Review-g298173-d320009-Reviews-Minato_Mirai_21-Yokohama_Kanagawa_Prefecture_Kanto.html#REVIEWS'
-    # # r_text = get_page_by_req(url)
-    # # print(r_text)
-    # # soup = BeautifulSoup(r_text, 'html.parser')
-    # # soups = soup.find_all("div", class_="entry")
-    # # for t in soups:
-    # #     print(t.get_text())
+    base_id = url.split('Attraction_Review-')[1].split('-Reviews')[0]
+    print(base_id)
+    page = 1
+    reviews = []
     try:
-        num = get_page_by_sel(browser, url, first_page=True)
+        num, page_reviews = get_page_by_sel(browser, url, first_page=True)
         crawling_url_list = make_list(url, num)
+        reviews.append(page_reviews)
         for url in crawling_url_list:
             time.sleep(1)
-            get_page_by_sel(browser, url)
+            page_reviews = get_page_by_sel(browser, url)[1]
+            reviews.append(page_reviews)
+            print(page_reviews)
+            page += 1
     except Exception as e:
         print(e)
+        print(page)
     finally:
         browser.close()
+        print(reviews)
