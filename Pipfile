@@ -4,10 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-requests = "*"
-"beautifulsoup4" = "*"
-django = "*"
+pymongo = "*"
 selenium = "*"
+retry = "*"
 
 [dev-packages]
 
