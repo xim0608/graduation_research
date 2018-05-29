@@ -14,15 +14,16 @@ delay = 10
 @retry(TimeoutException, tries=3, delay=2)
 def get_review_volume(browser, wait, first_page):
     num = 0
+    title = ""
     el_present = EC.presence_of_element_located((By.ID, 'taplc_location_reviews_list_responsive_detail_0'))
     wait.until(el_present)
     if first_page:
         number = browser.find_element_by_xpath(
             '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
         num = int(number.text.replace(',', ''))
-        print(num)
+        title = browser.find_element_by_tag_name('h1').text
     print("Page is ready")
-    return num
+    return num, title
 
 
 def check_invisible_loading_shade(wait):
@@ -36,7 +37,7 @@ def press_more_content(browser, wait):
     try:
         more_content_buttons = browser.find_elements_by_css_selector('span.taLnk.ulBlueLinks')
         # more_content_buttons = browser.find_elements_by_xpath('//span[contains(text(), "さらに表示")]')
-        print(more_content_buttons)
+        # print(more_content_buttons)
         if more_content_buttons:
             for button in more_content_buttons:
                 if button.text == 'さらに表示':
@@ -56,7 +57,8 @@ def get_page_by_sel(browser, url, first_page=False):
     wait = WebDriverWait(browser, delay)
     browser.get(url)
     browser.implicitly_wait(3)
-    num = get_review_volume(browser, wait, first_page)
+    num, title = get_review_volume(browser, wait, first_page)
+    first_page_info = (num, title)
     check_invisible_loading_shade(wait)
     press_more_content(browser, wait)
     try:
@@ -73,12 +75,12 @@ def get_page_by_sel(browser, url, first_page=False):
         title = element.find_element_by_class_name('noQuotes').text
         content = element.find_element_by_class_name('partial_entry').text
         rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
-        print("uid : {}".format(uid))
-        print("title : {}".format(title))
-        print("content: {}".format(content))
-        print("rating: {}".format(rating))
+        # print("uid : {}".format(uid))
+        # print("title : {}".format(title))
+        # print("content: {}".format(content))
+        # print("rating: {}".format(rating))
         reviews.append({"uid": uid, "title": title, "content": content, "rating": rating})
-    return num, reviews
+    return reviews, first_page_info
 
 
 def make_list(url, num):
@@ -99,12 +101,14 @@ if __name__ == '__main__':
     page = 1
     reviews = []
     try:
-        num, page_reviews = get_page_by_sel(browser, url, first_page=True)
-        crawling_url_list = make_list(url, num)
+        page_reviews, first_page_info = get_page_by_sel(browser, url, first_page=True)
+        crawling_url_list = make_list(url, first_page_info[0])
+        title = first_page_info[1]
+        print(title)
         reviews.append(page_reviews)
         for url in crawling_url_list:
             time.sleep(1)
-            page_reviews = get_page_by_sel(browser, url)[1]
+            page_reviews, first_page_info = get_page_by_sel(browser, url)
             reviews.append(page_reviews)
             print(page_reviews)
             page += 1
