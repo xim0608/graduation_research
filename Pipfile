@@ -8,6 +8,9 @@ pymongo = "*"
 selenium = "*"
 retry = "*"
 django = "*"
+gdata = "*"
+"oauth2client" = "*"
+gspread = "*"
 
 [dev-packages]
 

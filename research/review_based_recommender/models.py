@@ -1,5 +1,8 @@
 from django.db import models
-
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
+import os
+import sys
 
 class Spot(models.Model):
     base_id = models.CharField(max_length=200)
@@ -12,5 +15,58 @@ class Review(models.Model):
     content = models.TextField()
     rating = models.IntegerField()
     spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
+
+class SpreadsheetData():
+    data_column = ['url', 'spot_id', 'spot_name', 'reviews', 'count', ' remain', 'finish']
+
+    def __init__(self):
+        scopes = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/drive']
+        directory = os.path.dirname(os.path.abspath(__file__))
+        json_file = "/client_secret.json"
+        credentials = ServiceAccountCredentials.from_json_keyfile_name(directory + json_file, scopes=scopes)
+        # http_auth = credentials.authorize(Http())
+        self.gc = gspread.authorize(credentials)
+        self.wb = self.gc.open("クローラー管理")
+        self.sh = self.wb.sheet1
+
+    def get_remained_tasks(self):
+        print(self.sh.acell('A1'))
+
+    def set_spot_id(self):
+        url_list = self.sh.col_values(1)
+        del(url_list[0])
+        print(url_list)
+        spot_ids = []
+        for url in url_list:
+            try:
+                tmp = url.split('Attraction_Review-')[1].split('-Reviews')[0]
+                print(tmp)
+                spot_ids.append(tmp)
+            except:
+                print("url error: {}".format(url))
+                print("Unexpected error:", sys.exc_info()[0])
+                spot_ids.append('')
+        cell_list = self.sh.range("B2:B{}".format(len(url_list)+1))
+        for index, cell in enumerate(cell_list):
+            cell.value = spot_ids[index]
+        self.sh.update_cells(cell_list)
+
+    def find_by_spot_id(self, spot_id):
+        cell_list = self.sh.findall(spot_id)
+        if len(cell_list) == 0:
+            row = cell_list[0].row
+        else:
+            # TODO: indexが1以上のものを削除する
+            row = cell_list[0].row
+        row_values = self.sh.row_values(row)
+        print(row_values)
+        return self.convert_row(row_values)
+
+    @classmethod
+    def convert_row(cls, row_values):
+        h = {}
+        for index, row_value in enumerate(row_values):
+            h[cls.data_column[index]] = row_value
+        return h
 
 
