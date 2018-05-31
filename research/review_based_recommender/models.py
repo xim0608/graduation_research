@@ -29,8 +29,19 @@ class SpreadsheetData():
         self.wb = self.gc.open("クローラー管理")
         self.sh = self.wb.sheet1
 
-    def get_remained_tasks(self):
-        print(self.sh.acell('A1'))
+    def get_remained_spots_id(self):
+        flags = self.sh.col_values(7)
+        spot_ids = self.sh.col_values(2)
+        del(spot_ids[0])
+        del(flags[0])
+        tasks = []
+        for idx, spot_id in enumerate(spot_ids):
+            try:
+                if flags[idx] == 'FALSE':
+                    tasks.append(spot_id)
+            except:
+                print("Unexpected error:", sys.exc_info()[0])
+        return tasks
 
     def set_spot_id(self):
         url_list = self.sh.col_values(1)
