@@ -73,6 +73,13 @@ class SpreadsheetData():
         print(row_values)
         return self.convert_row(row_values)
 
+    def update_count_cell_by_spot_id(self, spot_id, count):
+        cell_list = self.sh.findall(spot_id)
+        if len(cell_list) == 0:
+            row = cell_list[0].row
+        count_before = self.sh.acell("E{}".format(row))
+        self.sh.update_acell("E{}".format(row), int(count_before) + count)
+
     @classmethod
     def convert_row(cls, row_values):
         h = {}

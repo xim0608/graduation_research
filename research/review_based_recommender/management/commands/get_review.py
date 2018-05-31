@@ -7,7 +7,10 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException
 import time
 from retry import retry
-from ...models import Spot, Review
+from ...models import Spot, Review, SpreadsheetData
+import sys
+import os
+from optparse import make_option
 
 class Command(BaseCommand):
     help = 'Get Review From Page'
@@ -90,32 +93,56 @@ class Command(BaseCommand):
             url_list.append(url.replace('.html', '-or{}.html'.format(i)))
         return url_list
 
+    def record_reviews(self, spreadsheet, spot, reviews):
+        # TODO: レビューの数を現在のスプレッドシートの数と足し合わせる
+        print(reviews)
+        for review in reviews:
+            r = Review(uid=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=spot)
+            r.save()
+        spreadsheet.update_count_cell_by_spot_id(spot.id, len(reviews))
+
+
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--spot-id', dest='spot-id', required=True,
+            help='spot-id to get review',
+        )
+
     def handle(self, *args, **options):
-        options = ChromeOptions()
-        options.add_argument('--user-agent=' + self.user_agent)
-        options.add_argument('--headless')
-        browser = Chrome(options=options)
-        url = 'https://www.tripadvisor.jp/Attraction_Review-g298173-d320009-Reviews-Minato_Mirai_21-Yokohama_Kanagawa_Prefecture_Kanto.html#REVIEWS'
-        base_id = url.split('Attraction_Review-')[1].split('-Reviews')[0]
-        print(base_id)
+        chrome_options = ChromeOptions()
+        chrome_options.add_argument('--user-agent=' + self.user_agent)
+        chrome_options.add_argument('--headless')
+        spread_sheet = SpreadsheetData()
+        browser = Chrome(options=chrome_options)
+        spot_id = options['spot-id']
+        spot_data = spread_sheet.find_by_spot_id(spot_id)
+        url = spot_data['url']
+        # url = 'https://www.tripadvisor.jp/Attraction_Review-g298173-d320009-Reviews-Minato_Mirai_21-Yokohama_Kanagawa_Prefecture_Kanto.html#REVIEWS'
+        # base_id = url.split('Attraction_Review-')[1].split('-Reviews')[0]
+        # print(base_id)
         page = 1
         reviews = []
         try:
             page_reviews, first_page_info = self.get_page_by_sel(browser, url, first_page=True)
             crawling_url_list = self.make_list(url, first_page_info[0])
             title = first_page_info[1]
-            print(title)
+            spot = Spot.objects.get_or_create(base_id=spot_id, title=title)[0]
+            print(spot)
+            # print(title)
             reviews.append(page_reviews)
             for url in crawling_url_list:
                 time.sleep(1)
                 page_reviews, first_page_info = self.get_page_by_sel(browser, url)
                 reviews.append(page_reviews)
+                self.record_reviews(spread_sheet, spot, page_reviews)
                 print(page_reviews)
                 page += 1
         except Exception as e:
+            exc_type, exc_obj, exc_tb = sys.exc_info()
+            fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            print(exc_type, fname, exc_tb.tb_lineno)
             print(e)
-            print(page)
         finally:
             browser.close()
-            print(reviews)
+            # print(reviews)
 
