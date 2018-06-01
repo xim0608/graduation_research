@@ -83,11 +83,14 @@ WSGI_APPLICATION = 'graduation_research.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'graduation_research_dev',
+        'NAME': 'graduation_research_dev_2',
         'USER': 'root',
         'PASSWORD': 'password',
         'HOST': '127.0.0.1',
         'PORT': '3306',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
 

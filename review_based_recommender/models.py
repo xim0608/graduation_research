@@ -81,6 +81,14 @@ class SpreadsheetData():
             count_before = 0
         self.sh.update_acell("E{}".format(row), int(count_before) + count)
 
+    def record_first_page_info(self, spot_id, first_page_info):
+        title = first_page_info[1]
+        review_num = first_page_info[0]
+        cell = self.sh.find(spot_id)
+        row = cell.row
+        self.sh.update_acell("C{}".format(row), title)
+        self.sh.update_acell("D{}".format(row), review_num)
+
     @classmethod
     def convert_row(cls, row_values):
         h = {}

@@ -11,6 +11,7 @@ from ...models import Spot, Review, SpreadsheetData
 import sys
 import os
 import traceback
+from selenium.webdriver.common.action_chains import ActionChains
 from optparse import make_option
 
 class Command(BaseCommand):
@@ -73,11 +74,12 @@ class Command(BaseCommand):
             wait.until(invisible_more_content)
         except TimeoutException:
             self.press_more_content(browser, wait)
-
+        actions = ActionChains(browser)
         elements = browser.find_elements_by_css_selector('.review.hsx_review')
         reviews = []
         for element in elements:
-            uid = element.find_element_by_class_name('memberOverlayLink').get_attribute('id')
+            actions.move_to_element(element).perform()
+            uid = element.find_element_by_xpath('//div[@class="memberOverlayLink"]').get_attribute('id')
             title = element.find_element_by_class_name('noQuotes').text
             content = element.find_element_by_class_name('partial_entry').text
             rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
@@ -88,9 +90,9 @@ class Command(BaseCommand):
             reviews.append({"uid": uid, "title": title, "content": content, "rating": rating})
         return reviews, first_page_info
 
-    def make_list(self, url, num):
+    def make_list(self, url, num, count=10):
         url_list = []
-        for i in range(10, int(num / 10) * 10 + 10, 10):
+        for i in range(count, int(num / 10) * 10 + 10, 10):
             url_list.append(url.replace('.html', '-or{}.html'.format(i)))
         return url_list
 
@@ -98,10 +100,31 @@ class Command(BaseCommand):
         # TODO: レビューの数を現在のスプレッドシートの数と足し合わせる
         print(reviews)
         for review in reviews:
-            r = Review(uid=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=spot)
+            r = Review.objects.get_or_create(uid=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=spot)[0]
             r.save()
         spreadsheet.update_count_cell_by_spot_id(spot.base_id, len(reviews))
 
+    def record_first_page_info(self, spreadsheet, spot_id, first_page_info):
+        spreadsheet.record_first_page_info(spot_id, first_page_info)
+
+    def check_reviews(self, spreadsheet, spot_id):
+        h = spreadsheet.find_by_spot_id(spot_id)
+        count = h['count']
+        if count == '':
+            count = 0
+        return int(count)
+
+    def check_total_reviews(self, spreadsheet, spot_id):
+        h = spreadsheet.find_by_spot_id(spot_id)
+        count = h['reviews']
+        if count == '':
+            count = 0
+        return int(count)
+
+    def spot_title(self, spreadsheet, spot_id):
+        h = spreadsheet.find_by_spot_id(spot_id)
+        spot_name = h['spot_name']
+        return spot_name
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -122,22 +145,28 @@ class Command(BaseCommand):
         # base_id = url.split('Attraction_Review-')[1].split('-Reviews')[0]
         # print(base_id)
         page = 1
-        reviews = []
         try:
-            page_reviews, first_page_info = self.get_page_by_sel(browser, url, first_page=True)
-            crawling_url_list = self.make_list(url, first_page_info[0])
-            title = first_page_info[1]
+            count = 10
+            now_recorded_count = self.check_reviews(spread_sheet, spot_id)
+
+            if now_recorded_count == 0:
+                page_reviews, first_page_info = self.get_page_by_sel(browser, url, first_page=True)
+                title = first_page_info[1]
+                page_num = first_page_info[0]
+                spot = Spot.objects.get_or_create(base_id=spot_id, title=title)[0]
+                self.record_first_page_info(spread_sheet, spot_id, first_page_info)
+                self.record_reviews(spread_sheet, spot, page_reviews)
+            else:
+                page_num = self.check_total_reviews(spread_sheet, spot_id)
+                count = now_recorded_count
+                title = self.spot_title(spread_sheet, spot_id)
             spot = Spot.objects.get_or_create(base_id=spot_id, title=title)[0]
-            print(spot)
-            # print(title)
-            reviews.append(page_reviews)
-            self.record_reviews(spread_sheet, spot, page_reviews)
+            crawling_url_list = self.make_list(url, page_num, count)
             for url in crawling_url_list:
                 time.sleep(1)
                 page_reviews, first_page_info = self.get_page_by_sel(browser, url)
-                reviews.append(page_reviews)
                 self.record_reviews(spread_sheet, spot, page_reviews)
-                print(page_reviews)
+                # print(page_reviews)
                 page += 1
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
