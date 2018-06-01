@@ -10,6 +10,7 @@ from retry import retry
 from ...models import Spot, Review, SpreadsheetData
 import sys
 import os
+import traceback
 from optparse import make_option
 
 class Command(BaseCommand):
@@ -99,7 +100,7 @@ class Command(BaseCommand):
         for review in reviews:
             r = Review(uid=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=spot)
             r.save()
-        spreadsheet.update_count_cell_by_spot_id(spot.id, len(reviews))
+        spreadsheet.update_count_cell_by_spot_id(spot.base_id, len(reviews))
 
 
     def add_arguments(self, parser):
@@ -130,6 +131,7 @@ class Command(BaseCommand):
             print(spot)
             # print(title)
             reviews.append(page_reviews)
+            self.record_reviews(spread_sheet, spot, page_reviews)
             for url in crawling_url_list:
                 time.sleep(1)
                 page_reviews, first_page_info = self.get_page_by_sel(browser, url)
@@ -141,6 +143,8 @@ class Command(BaseCommand):
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             print(exc_type, fname, exc_tb.tb_lineno)
+            print(traceback.format_exception(exc_type, exc_obj, exc_tb))
+            print(traceback.format_tb(e.__traceback__))
             print(e)
         finally:
             browser.close()
