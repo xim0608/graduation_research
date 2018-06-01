@@ -81,10 +81,10 @@ class Command(BaseCommand):
         elements = self.browser.find_elements_by_css_selector('.review.hsx_review')
         reviews = []
         for element in elements:
-            try:
-                self.actions.move_to_element(element).perform()
-            except:
-                print("move to element failed")
+            # try:
+            #     self.actions.move_to_element(element).perform()
+            # except:
+            #     print("move to element failed")
             uid = element.find_element_by_xpath('.//div[@class="memberOverlayLink"]').get_attribute('id')
             title = element.find_element_by_class_name('noQuotes').text
             content = element.find_element_by_class_name('partial_entry').text
