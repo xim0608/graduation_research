@@ -68,7 +68,7 @@ class Command(BaseCommand):
         print(url)
         self.browser.get(url)
         self.browser.implicitly_wait(3)
-        num, title = self.get_review_volume(self.browser, first_page)
+        num, title = self.get_review_volume(first_page)
         first_page_info = (num, title)
         self.check_invisible_loading_shade()
         self.press_more_content()
@@ -81,8 +81,11 @@ class Command(BaseCommand):
         elements = self.browser.find_elements_by_css_selector('.review.hsx_review')
         reviews = []
         for element in elements:
-            self.actions.move_to_element(element).perform()
-            uid = element.find_element_by_xpath('//div[@class="memberOverlayLink"]').get_attribute('id')
+            try:
+                self.actions.move_to_element(element).perform()
+            except:
+                print("move to element failed")
+            uid = element.find_element_by_xpath('.//div[@class="memberOverlayLink"]').get_attribute('id')
             title = element.find_element_by_class_name('noQuotes').text
             content = element.find_element_by_class_name('partial_entry').text
             rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
