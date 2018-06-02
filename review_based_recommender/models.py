@@ -43,6 +43,13 @@ class SpreadsheetData():
                 print("Unexpected error:", sys.exc_info()[0])
         return tasks
 
+    def task_remained(self):
+        tasks = self.get_remained_spots_id()
+        if len(tasks) > 0:
+            return True
+        else:
+            return False
+
     def set_spot_id(self):
         url_list = self.sh.col_values(1)
         del(url_list[0])

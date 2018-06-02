@@ -12,6 +12,7 @@ gdata = "*"
 "oauth2client" = "*"
 gspread = "*"
 pymysql = "*"
+slackclient = "*"
 
 [dev-packages]
 
