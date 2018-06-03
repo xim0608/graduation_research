@@ -108,7 +108,7 @@ class Command(BaseCommand):
 
     def record_reviews(self, spot, reviews):
         for review in reviews:
-            r = Review.objects.get_or_create(uid=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=spot)[0]
+            r = Review.objects.get_or_create(username=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=spot)[0]
             r.save()
         self.spread_sheet.update_count_cell_by_spot_id(spot.base_id, len(reviews))
 
