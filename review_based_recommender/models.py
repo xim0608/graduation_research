@@ -30,14 +30,15 @@ class SpreadsheetData():
         self.sh = self.wb.sheet1
 
     def get_remained_spots_id(self):
-        flags = self.sh.col_values(7)
+        flags = self.sh.col_values(6)
         spot_ids = self.sh.col_values(2)
+        reviews_num = self.sh.col_values(4)
         del(spot_ids[0])
         del(flags[0])
         tasks = []
         for idx, spot_id in enumerate(spot_ids):
             try:
-                if flags[idx] == 'FALSE':
+                if int(flags[idx]) > 0 and reviews_num[idx] is not '':
                     tasks.append(spot_id)
             except:
                 print("Unexpected error:", sys.exc_info()[0])
