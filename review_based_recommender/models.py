@@ -10,7 +10,7 @@ class Spot(models.Model):
 
 
 class Review(models.Model):
-    uid = models.CharField(max_length=200)
+    username = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
     content = models.TextField()
     rating = models.IntegerField()

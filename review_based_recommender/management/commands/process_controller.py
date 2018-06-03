@@ -12,6 +12,7 @@ class Command(BaseCommand):
         self.base_command = ['python', 'manage.py', 'get_review', '--spot-id']
 
     def handle(self, *args, **options):
+        self.spread_sheet.set_spot_id()
         do_flag = True
         while do_flag:
             remained_tasks = self.spread_sheet.get_remained_spots_id()

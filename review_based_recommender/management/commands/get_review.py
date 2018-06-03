@@ -86,7 +86,13 @@ class Command(BaseCommand):
             #     self.actions.move_to_element(element).perform()
             # except:
             #     print("move to element failed")
-            uid = element.find_element_by_xpath('.//div[@class="memberOverlayLink"]').get_attribute('id')
+            try:
+                invisible_more_content = EC.invisibility_of_element_located(
+                    (By.XPATH, '//span[contains(text(), "さらに表示") and @class="taLnk ulBlueLinks"]'))
+                self.wait.until(invisible_more_content)
+            except TimeoutException:
+                self.press_more_content()
+            uid = element.find_element_by_xpath('.//div[@class="username mo"]').text
             title = element.find_element_by_class_name('noQuotes').text
             content = element.find_element_by_class_name('partial_entry').text
             rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
