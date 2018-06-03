@@ -13,6 +13,7 @@ gdata = "*"
 gspread = "*"
 pymysql = "*"
 slackclient = "*"
+django-dotenv = "*"
 
 [dev-packages]
 

@@ -2,10 +2,12 @@
 import os
 import sys
 import pymysql
+import dotenv
 
 pymysql.install_as_MySQLdb()
 
 if __name__ == "__main__":
+    dotenv.read_dotenv()
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "graduation_research.settings")
     try:
         from django.core.management import execute_from_command_line
