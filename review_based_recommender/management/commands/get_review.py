@@ -25,7 +25,7 @@ class Command(BaseCommand):
         chrome_options.add_argument('--user-agent=' + self.user_agent)
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--window-size=1280,1024')
-        self.spread_sheet = SpreadsheetData()
+        # self.spread_sheet = SpreadsheetData()
         self.browser = Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.browser, self.delay)
         self.actions = ActionChains(self.browser)
@@ -110,7 +110,8 @@ class Command(BaseCommand):
         for review in reviews:
             r = Review.objects.get_or_create(username=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=spot)[0]
             r.save()
-        self.spread_sheet.update_count_cell_by_spot_id(spot.base_id, len(reviews))
+        self.task.update_count()
+        # self.spread_sheet.update_count_cell_by_spot_id(spot.base_id, len(reviews))
 
     def record_first_page_info(self, spot_id, first_page_info):
         self.spread_sheet.record_first_page_info(spot_id, first_page_info)
@@ -142,8 +143,10 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         spot_id = options['spot-id']
-        spot_data = self.spread_sheet.find_by_spot_id(spot_id)
-        url = spot_data['url']
+        self.spot = Spot.objects.get(base_id=spot_id)
+        url = self.spot.url
+        # spot_data = self.spread_sheet.find_by_spot_id(spot_id)
+        # url = spot_data['url']
         page = 1
         try:
             count = 10
@@ -176,4 +179,3 @@ class Command(BaseCommand):
             print(e)
         finally:
             self.browser.close()
-

@@ -3,10 +3,42 @@ from oauth2client.service_account import ServiceAccountCredentials
 import gspread
 import os
 import sys
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.db.models import F
+
 
 class Spot(models.Model):
-    base_id = models.CharField(max_length=200)
-    title = models.CharField(max_length=200)
+    base_id = models.CharField(max_length=200, null=True, blank=True)
+    title = models.CharField(max_length=200, null=True, blank=True)
+    url = models.CharField(max_length=200, unique=True)
+    count = models.IntegerField(default=None, null=True, blank=True)
+    total_count = models.IntegerField(default=None, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return 'url={}, spot={}, count={}, total_count={}'.format(self.url, self.title, self.count, self.total_count)
+
+    def update_count(self, count):
+        self.update(count=F('count') + 1)
+
+    @classmethod
+    def remained_tasks(cls):
+        remained_tasks = Spot.objects.filter(total_count=None)
+        doing_or_done_tasks = Spot.objects.exclude(total_count=None)
+        for task in doing_or_done_tasks:
+            if task.total_count - task.count != 0:
+                remained_tasks += task
+        return remained_tasks
+
+
+@receiver(post_save, sender=Spot)
+def create_spot(sender, instance, created, **kwargs):
+    if created:
+        tmp = instance.url.split('Attraction_Review-')[1].split('-Reviews')[0]
+        instance.base_id = tmp
+        instance.save()
 
 
 class Review(models.Model):
@@ -15,6 +47,10 @@ class Review(models.Model):
     content = models.TextField()
     rating = models.IntegerField()
     spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return 'spot={}, title={}'.format(self.spot.title, self.title)
+
 
 class SpreadsheetData():
     data_column = ['url', 'spot_id', 'spot_name', 'reviews', 'count', ' remain', 'finish']
@@ -103,5 +139,3 @@ class SpreadsheetData():
         for index, row_value in enumerate(row_values):
             h[cls.data_column[index]] = row_value
         return h
-
-
