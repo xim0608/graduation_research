@@ -12,7 +12,7 @@ class Spot(models.Model):
     base_id = models.CharField(max_length=200, null=True, blank=True)
     title = models.CharField(max_length=200, null=True, blank=True)
     url = models.CharField(max_length=200, unique=True)
-    count = models.IntegerField(default=None, null=True, blank=True)
+    count = models.IntegerField(default=0, null=True, blank=True)
     total_count = models.IntegerField(default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -21,7 +21,7 @@ class Spot(models.Model):
         return 'url={}, spot={}, count={}, total_count={}'.format(self.url, self.title, self.count, self.total_count)
 
     def update_count(self, count):
-        self.update(count=F('count') + 1)
+        self.update(count=F('count') + count)
 
     @classmethod
     def remained_tasks(cls):
