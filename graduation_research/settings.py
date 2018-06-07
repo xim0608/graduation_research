@@ -32,6 +32,7 @@ if os.environ.get('DEBUG') == 'TRUE':
 else:
     DEBUG = False
     ALLOWED_HOSTS = ['gr.ryuju.com']
+    STATIC_ROOT = "/var/www/graduation_research/static/"
 
 # Application definition
 
