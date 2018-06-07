@@ -26,10 +26,12 @@ dotenv.read_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'qolx&e^=o_om@k#nk(v(j*l34pccid--l0)=_!abq(2))*pksy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
+if os.environ['DEBUG'] == 'TRUE':
+    DEBUG = True
+    ALLOWED_HOSTS = []
+else:
+    DEBUG = False
+    ALLOWED_HOSTS = ['gr.ryuju.com']
 
 # Application definition
 
@@ -121,9 +123,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ja'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Tokyo'
 
 USE_I18N = True
 
