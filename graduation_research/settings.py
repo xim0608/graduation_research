@@ -26,7 +26,7 @@ dotenv.read_dotenv(os.path.join(BASE_DIR, '.env'))
 SECRET_KEY = 'qolx&e^=o_om@k#nk(v(j*l34pccid--l0)=_!abq(2))*pksy'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ['DEBUG'] == 'TRUE':
+if os.environ.get('DEBUG') == 'TRUE':
     DEBUG = True
     ALLOWED_HOSTS = []
 else:
