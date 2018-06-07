@@ -18,24 +18,32 @@ class Spot(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return 'url={}, spot={}, count={}, total_count={}'.format(self.url, self.title, self.count, self.total_count)
+        if self.count != 0:
+            return 'spot={}, count={}/{}'.format(self.title, self.count, self.total_count)
+        else:
+            return 'url={}'.format(self.url)
 
     def update_count(self, count):
-        self.update(count=F('count') + count)
+        self.count = self.count + count
+        self.save()
 
     @classmethod
     def remained_tasks(cls):
         remained_tasks = Spot.objects.filter(total_count=None)
         doing_or_done_tasks = Spot.objects.exclude(total_count=None)
-        for task in doing_or_done_tasks:
-            if task.total_count - task.count != 0:
-                remained_tasks += task
-        return remained_tasks
+        remained_tasks_list = list(remained_tasks)
+        doing_or_done_tasks_list = list(doing_or_done_tasks)
+        print(remained_tasks)
+        for task in doing_or_done_tasks_list:
+            if task.total_count - task.count > 0:
+                remained_tasks_list.append(task)
+        return remained_tasks_list
 
 
 @receiver(post_save, sender=Spot)
 def create_spot(sender, instance, created, **kwargs):
     if created:
+        # set spot base id
         tmp = instance.url.split('Attraction_Review-')[1].split('-Reviews')[0]
         instance.base_id = tmp
         instance.save()
