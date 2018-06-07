@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "77db14c91bc1c06d62cd1c77d9a1f514fc7372db36ebed8c7a6d91ed21071825"
+            "sha256": "7aefd8b1a0fd3194328b182c477df00f5d72364da80333a7191b88de31723b08"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -81,6 +81,17 @@
                 "sha256:8c7309c718f94b3a625cb648ace320157ad16ff131ae0af362c9f21b80ef6ec4"
             ],
             "version": "==2.6"
+        },
+        "mysqlclient": {
+            "hashes": [
+                "sha256:1e85e48b167e2af3bb08f273fdbd1ad6401cbe75057fa6513f97387dc7b282dc",
+                "sha256:2d9ec33de39f4d9c64ad7322ede0521d85829ce36a76f9dd3d6ab76a9c8648e5",
+                "sha256:371df79d000af56b4e540b7ce2120d1c9afb04b751bfce25a1eb609c50fd10ff",
+                "sha256:b3b1a7e4468180afb79289b54069d9499242946a4cedf3928cbf6b2a13800016",
+                "sha256:d56e379c03efad746e84705cbb97401f60d1f98b05e11a27f2d9c2d043936974"
+            ],
+            "index": "pypi",
+            "version": "==1.3.12"
         },
         "oauth2client": {
             "hashes": [
@@ -245,6 +256,13 @@
                 "sha256:cc44da8e1145637334317feebd728bd869a35285b93cbb4cca2577da7e62db4f"
             ],
             "version": "==1.22"
+        },
+        "uwsgi": {
+            "hashes": [
+                "sha256:3dc2e9b48db92b67bfec1badec0d3fdcc0771316486c5efa3217569da3528bf2"
+            ],
+            "index": "pypi",
+            "version": "==2.0.17"
         },
         "websocket-client": {
             "hashes": [
