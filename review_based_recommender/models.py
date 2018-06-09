@@ -39,6 +39,12 @@ class Spot(models.Model):
                 remained_tasks_list.append(task)
         return remained_tasks_list
 
+    @classmethod
+    def import_urls(cls, urls):
+        for url in urls:
+            Spot.objects.get_or_create(url=url)
+
+
 
 @receiver(post_save, sender=Spot)
 def create_spot(sender, instance, created, **kwargs):
@@ -72,6 +78,9 @@ class SpreadsheetData():
         self.gc = gspread.authorize(credentials)
         self.wb = self.gc.open("クローラー管理")
         self.sh = self.wb.sheet1
+
+    def get_set_url(self):
+        return self.sh.col_values(1)[1:]
 
     def get_remained_spots_id(self):
         flags = self.sh.col_values(6)
