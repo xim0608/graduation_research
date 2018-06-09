@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from ...models import Spot, Review, SpreadsheetData
 import subprocess
 import random
-import time
+import os
 
 class Command(BaseCommand):
     def __init__(self):
@@ -22,3 +22,7 @@ class Command(BaseCommand):
                 do_flag = True
             else:
                 do_flag = False
+            if os.environ.get('DEBUG') == 'TRUE':
+                pass
+            else:
+                subprocess.call("ps aux | grep chrome | grep -v grep | awk '{ print \"kill -9\", $2 }' | sh")
