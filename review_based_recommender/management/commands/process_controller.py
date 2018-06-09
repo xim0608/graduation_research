@@ -25,4 +25,4 @@ class Command(BaseCommand):
             if os.environ.get('DEBUG') == 'TRUE':
                 pass
             else:
-                subprocess.call("ps aux | grep chrome | grep -v grep | awk '{ print \"kill -9\", $2 }' | sh")
+                subprocess.call("ps aux | grep chrome | grep -v grep | awk '{ print \"kill -9\", $2 }' | sh", shell=True)
