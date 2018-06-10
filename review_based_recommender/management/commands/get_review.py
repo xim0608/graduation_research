@@ -36,9 +36,13 @@ class Command(BaseCommand):
         el_present = EC.presence_of_element_located((By.ID, 'taplc_location_reviews_list_responsive_detail_0'))
         self.wait.until(el_present)
         if first_page:
-            number = self.browser.find_element_by_xpath(
-                '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
-            num = int(number.text.replace(',', ''))
+            try:
+                number = self.browser.find_element_by_xpath(
+                    '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
+                num = int(number.text.replace(',', ''))
+            except NoSuchElementException:
+                number = self.browser.find_element_by_xpath('//*[@id="REVIEWS"]/div[1]/div/span[2]')
+                num = int(number.text.replace('(', '').replace(')', ''))
             title = self.browser.find_element_by_tag_name('h1').text
         print("Page is ready")
         return num, title
