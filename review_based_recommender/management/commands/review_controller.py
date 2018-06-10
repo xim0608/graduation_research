@@ -16,6 +16,11 @@ class Command(BaseCommand):
             task = random.choice(remained_tasks)
             subprocess.call(self.base_command + [task.base_id])
 
+            # check remain tasks and add spots
+            remained_tasks = Spot.remained_tasks()
+            if len(remained_tasks) == 0:
+                subprocess.call(['python', 'manage.py', 'spots_controller'])
+
             # check remain tasks
             remained_tasks = Spot.remained_tasks()
             if len(remained_tasks) > 0:

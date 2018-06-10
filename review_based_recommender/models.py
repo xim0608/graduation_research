@@ -8,6 +8,37 @@ from django.dispatch import receiver
 from django.db.models import F
 
 
+class City(models.Model):
+    base_id = models.CharField(max_length=200, null=True, blank=True)
+    name = models.CharField(max_length=200, null=True, blank=True)
+    url = models.CharField(max_length=200, unique=True)
+    count = models.IntegerField(default=0, null=True, blank=True)
+    total_count = models.IntegerField(default=None, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    finish = models.BooleanField(default=False)
+
+    @classmethod
+    def import_urls(cls, urls):
+        for url in urls:
+            City.objects.get_or_create(url=url)
+
+    def __str__(self):
+        if self.count != 0:
+            return 'city={}, count={}/{}'.format(self.name, self.count, self.total_count)
+        else:
+            return 'url={}'.format(self.url)
+
+
+@receiver(post_save, sender=City)
+def create_city(sender, instance, created, **kwargs):
+    if created:
+        # set spot base id
+        tmp = instance.url.split('Attractions-')[1].split('-Activities')[0]
+        instance.base_id = tmp
+        instance.save()
+
+
 class Spot(models.Model):
     base_id = models.CharField(max_length=200, null=True, blank=True)
     title = models.CharField(max_length=200, null=True, blank=True)
@@ -16,6 +47,7 @@ class Spot(models.Model):
     total_count = models.IntegerField(default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         if self.count != 0:
@@ -33,16 +65,16 @@ class Spot(models.Model):
         doing_or_done_tasks = Spot.objects.exclude(total_count=None)
         remained_tasks_list = list(remained_tasks)
         doing_or_done_tasks_list = list(doing_or_done_tasks)
-        for task in doing_or_done_tasks_list:
-            if task.total_count - task.count > 0:
-                remained_tasks_list.append(task)
+        if len(doing_or_done_tasks) > 0:
+            for task in doing_or_done_tasks_list:
+                if task.total_count - task.count > 0:
+                    remained_tasks_list.append(task)
         return remained_tasks_list
 
     @classmethod
     def import_urls(cls, urls):
         for url in urls:
             Spot.objects.get_or_create(url=url)
-
 
 
 @receiver(post_save, sender=Spot)
@@ -80,6 +112,9 @@ class SpreadsheetData():
 
     def get_set_url(self):
         return self.sh.col_values(1)[1:]
+
+    def get_set_city_url(self):
+        return self.wb.worksheet("シート2").col_values(1)[1:]
 
     def get_remained_spots_id(self):
         flags = self.sh.col_values(6)
