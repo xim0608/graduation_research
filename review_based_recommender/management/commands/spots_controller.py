@@ -11,8 +11,8 @@ class Command(BaseCommand):
         self.base_command = ['python', 'manage.py', 'get_spot', '--city-id']
 
     def handle(self, *args, **options):
-        urls = self.spreadsheet.get_set_url()
-        Spot.import_urls(urls)
+        urls = self.spreadsheet.get_set_city_url()
+        City.import_urls(urls)
         remained_cities = City.objects.filter(finish=False)
         if len(remained_cities) > 0:
             city = remained_cities[0]
