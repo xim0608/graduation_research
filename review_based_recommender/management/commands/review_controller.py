@@ -13,8 +13,9 @@ class Command(BaseCommand):
         do_flag = True
         while do_flag:
             remained_tasks = Spot.remained_tasks()
-            task = random.choice(remained_tasks)
-            subprocess.call(self.base_command + [task.base_id])
+            if len(remained_tasks) > 0:
+                task = random.choice(remained_tasks)
+                subprocess.call(self.base_command + [task.base_id])
 
             # check remain tasks and add spots
             remained_tasks = Spot.remained_tasks()
