@@ -33,7 +33,6 @@ class Spot(models.Model):
         doing_or_done_tasks = Spot.objects.exclude(total_count=None)
         remained_tasks_list = list(remained_tasks)
         doing_or_done_tasks_list = list(doing_or_done_tasks)
-        print(remained_tasks)
         for task in doing_or_done_tasks_list:
             if task.total_count - task.count > 0:
                 remained_tasks_list.append(task)
