@@ -42,7 +42,7 @@ class Command(BaseCommand):
                 num = int(number.text.replace(',', ''))
             except NoSuchElementException:
                 number = self.browser.find_element_by_xpath('//*[@id="REVIEWS"]/div[1]/div/span[2]')
-                num = int(number.text.replace('(', '').replace(')', ''))
+                num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
             title = self.browser.find_element_by_tag_name('h1').text
         print("Page is ready")
         return num, title
