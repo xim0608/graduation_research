@@ -70,6 +70,8 @@ class Command(BaseCommand):
         num = 0
         for element in elements:
             url = element.find_element_by_class_name('listing_title').find_element_by_tag_name('a').get_attribute('href')
+            if url is None:
+                continue
             try:
                 content = int(element.find_element_by_class_name('more').text.split('件')[0].replace(',', ''))
                 print("url: {}, total_count: {}".format(url, content))
