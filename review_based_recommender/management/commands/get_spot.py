@@ -36,13 +36,11 @@ class Command(BaseCommand):
         self.browser.implicitly_wait(1)
         elements = self.browser.find_elements_by_xpath('//*[@class="attraction_clarity_cell"]')
         spots = []
-        num = 0
+        last_page_num = 0
         if first_page:
-            try:
-                num = int(elements[0].find_element_by_xpath('//*[@class="popRanking wrap"]').text.split('観光スポット')[1].split('件')[0].replace(',', ''))
-            except ValueError:
-                num = int(elements[1].find_element_by_xpath('//*[@class="popRanking wrap"]').text.split('観光スポット')[1].split('件')[0].replace(',', ''))
-            print(num)
+            last_page_num = int(elements[0].find_element_by_xpath('//*[@class="pageNumbers"]/a[position()=last()]').text.replace(',', ''))
+            #.split('観光スポット')[1].split('件')[0].replace(',', ''))
+            print(last_page_num)
             title = self.browser.find_element_by_tag_name('h1').text
             self.city.title = title
             self.city.save()
@@ -60,7 +58,7 @@ class Command(BaseCommand):
                     print('no review page: {}'.format(url))
 
         if first_page:
-            return num, spots
+            return last_page_num, spots
         else:
             return spots
 
@@ -97,11 +95,11 @@ class Command(BaseCommand):
         url = self.city.url
         print(url)
         try:
-            num, spots = self.get_page(url, first_page=True)
+            last_page_num, spots = self.get_page(url, first_page=True)
             self.save_spots(spots)
             url_list = []
-            for i in range(30, num, 30):
-                url_list.append(url.replace('.html', '-oa{}.html'.format(i)))
+            for i in range(1, last_page_num):
+                url_list.append(url.replace('.html', '-oa{}.html'.format(i * 30)))
             for url in url_list:
                 spots = self.get_page(url)
                 self.save_spots(spots)
