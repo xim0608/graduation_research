@@ -16,6 +16,7 @@ slackclient = "*"
 django-dotenv = "*"
 uwsgi = "*"
 mysqlclient = "*"
+slackweb = "*"
 
 [dev-packages]
 
