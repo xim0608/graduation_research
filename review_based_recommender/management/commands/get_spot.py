@@ -38,7 +38,10 @@ class Command(BaseCommand):
         spots = []
         num = 0
         if first_page:
-            num = int(elements[0].find_element_by_xpath('//*[@class="popRanking wrap"]').text.split('観光スポット')[1].split('件')[0].replace(',', ''))
+            try:
+                num = int(elements[0].find_element_by_xpath('//*[@class="popRanking wrap"]').text.split('観光スポット')[1].split('件')[0].replace(',', ''))
+            except ValueError:
+                num = int(elements[1].find_element_by_xpath('//*[@class="popRanking wrap"]').text.split('観光スポット')[1].split('件')[0].replace(',', ''))
             print(num)
             title = self.browser.find_element_by_tag_name('h1').text
             self.city.title = title
