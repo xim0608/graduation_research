@@ -83,7 +83,10 @@ def create_spot(sender, instance, created, **kwargs):
         # set spot base id
         tmp = instance.url.split('Attraction_Review-')[1].split('-Reviews')[0]
         instance.base_id = tmp
-        instance.save()
+        if Spot.objects.filter(base_id=tmp).exists():
+            instance.delete()
+        else:
+            instance.save()
 
 
 class Review(models.Model):
