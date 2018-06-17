@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import dotenv
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'review_based_recommender'
+    'review_based_recommender',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -139,3 +141,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+IPYTHON_ARGUMENTS = [
+    '--ext', 'django_extensions.management.notebook_extension',
+    '--ext', 'graduation_research.notebook_extension',
+    '--debug',
+]
+
+NOTEBOOK_ARGUMENTS = [
+    '--ip=0.0.0.0', # reach notebooks from outside
+    '--port=8888',  # std port
+    '--no-browser', # don't start browser on start
+    # directory in the vagrant box to the notebooks
+    '--notebook-dir', "./notebooks"
+]

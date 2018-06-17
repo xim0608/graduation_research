@@ -17,6 +17,13 @@ django-dotenv = "*"
 uwsgi = "*"
 mysqlclient = "*"
 slackweb = "*"
+django-extensions = "*"
+ipython = "*"
+jupyter = "*"
+pandas = "*"
+matplotlib = "*"
+seaborn = "*"
+django-pandas = "*"
 
 [dev-packages]
 
