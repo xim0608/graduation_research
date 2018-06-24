@@ -75,6 +75,9 @@ class Spot(models.Model):
         for url in urls:
             Spot.objects.get_or_create(url=url)
 
+    def reviews(self):
+        return Review.objects.filter(spot_id=self.id)
+
 
 @receiver(post_save, sender=Spot)
 def create_spot(sender, instance, created, **kwargs):

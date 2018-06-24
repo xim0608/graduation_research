@@ -24,6 +24,11 @@ pandas = "*"
 matplotlib = "*"
 seaborn = "*"
 django-pandas = "*"
+"mecab-python3" = "*"
+gensim = "*"
+nltk = "*"
+mojimoji = "*"
+janome = "*"
 
 [dev-packages]
 
