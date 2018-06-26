@@ -29,6 +29,9 @@ gensim = "*"
 nltk = "*"
 mojimoji = "*"
 janome = "*"
+dask = "*"
+toolz = "*"
+cloudpickle = "*"
 
 [dev-packages]
 
