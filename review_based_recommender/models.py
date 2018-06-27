@@ -103,10 +103,6 @@ class Review(models.Model):
     def __str__(self):
         return 'spot={}, title={}'.format(self.spot.title, self.title)
 
-class LdaSimilarity(models.Model):
-    spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
-    vector = models.JSON
-
 
 class SpreadsheetData():
     data_column = ['url', 'spot_id', 'spot_name', 'reviews', 'count', ' remain', 'finish']
