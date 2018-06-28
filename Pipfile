@@ -32,6 +32,7 @@ janome = "*"
 dask = "*"
 toolz = "*"
 cloudpickle = "*"
+pyyaml = "*"
 
 [dev-packages]
 

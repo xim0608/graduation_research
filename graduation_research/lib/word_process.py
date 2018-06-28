@@ -16,6 +16,7 @@ def __get_sloth_lib_stop_words():
 def get_stop_words():
     stopwords = ['\n', '、', '「', '」']
     stopwords += __get_sloth_lib_stop_words()
+    print('created stopwords_list')
     return stopwords
 
 
@@ -38,7 +39,9 @@ def reviews2tokens_by_simple_parse(reviews, stopwords):
     for review in reviews:
         for chunk in mecab.parse(review).splitlines()[:-1]:
             (surface, feature) = chunk.split('\t')
+            if surface in stopwords:
+                continue
             if feature.startswith('名詞'):
-                print(feature)
+                # print(feature)
                 tokens.append(surface)
     return tokens
