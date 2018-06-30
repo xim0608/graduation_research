@@ -1,16 +1,18 @@
 from gensim import models, similarities, corpora
 from review_based_recommender.models import Spot
 import pickle
+import os
 
 
 class Recommend:
     def __init__(self, method_name='default'):
-        self.corpus = corpora.MmCorpus("{}_cop.mm".format(method_name))
-        self.lda = models.ldamodel.LdaModel.load("{}_lda.model".format(method_name))
-        self.d = corpora.Dictionary.load_from_text("{}_dict.txt".format(method_name))
-        self.doc_index = similarities.docsim.MatrixSimilarity.load("{}_sim".format(method_name))
+        base_dir = os.path.dirname(os.path.abspath(__file__)) + '/bin'
+        self.corpus = corpora.MmCorpus("{}/{}_cop.mm".format(base_dir, method_name))
+        self.lda = models.ldamodel.LdaModel.load("{}/{}_lda.model".format(base_dir, method_name))
+        self.d = corpora.Dictionary.load_from_text("{}/{}_dict.txt".format(base_dir, method_name))
+        self.doc_index = similarities.docsim.MatrixSimilarity.load("{}/{}_sim".format(base_dir, method_name))
         # self.df = pickle.load(open('{}_df'.format(method_name), 'rb'))
-        self.df_list = pickle.load(open('{}_df_list'.format(method_name), 'rb'))
+        self.df_list = pickle.load(open('{}/{}_df_list'.format(base_dir, method_name), 'rb'))
 
     def find(self, base_doc_id):
         c = self.corpus[base_doc_id]
@@ -21,3 +23,7 @@ class Recommend:
         for doc_id, sim in s[1:10]:
             spot_ids.append(self.df_list[doc_id])
         return Spot.objects.filter(id__in=spot_ids)
+
+    def show_base_and_recommend(self, base_doc_id):
+        s = Spot.objects.get(id=base_doc_id)
+        return s, self.find(base_doc_id)

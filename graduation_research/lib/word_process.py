@@ -45,3 +45,16 @@ def reviews2tokens_by_simple_parse(reviews, stopwords):
                 # print(feature)
                 tokens.append(surface)
     return tokens
+
+
+def review2tokens_by_adjective(reviews, stopwords):
+    tokens = []
+    for review in reviews:
+        for chunk in mecab.parse(review).splitlines()[:-1]:
+            (surface, feature) = chunk.split('\t')
+            if surface in stopwords:
+                continue
+            if feature.startswith('形容詞'):
+                # print(feature)
+                tokens.append(surface)
+    return tokens
