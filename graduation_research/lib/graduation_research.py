@@ -3,10 +3,13 @@ from graduation_research.lib.gr_df import ReviewData
 from graduation_research.lib.gr_docs import GrDocs
 from gensim import corpora, models, similarities
 import os
+import pickle
+import time
 
 
 class GraduationResearch:
     def __init__(self, method_name='default'):
+        self.start_time = time.time()
         f = open("{}/settings.yml".format(os.path.dirname(os.path.abspath(__file__))), "r+")
         data = yaml.load(f)
         self.settings = data
@@ -15,6 +18,7 @@ class GraduationResearch:
         print(self.method_name)
         self.setting = data[method_name]
         self.df = self.make_df()
+        self.df_list = self.df['spot_id'].tolist()
         dic_corpus = self.make_dic_corpus()
         self.dic = dic_corpus[0]
         self.corpus = dic_corpus[1]
@@ -38,8 +42,13 @@ class GraduationResearch:
         return lda
 
     def save(self):
-        self.dic.save_as_text("{}_dict.txt".format(self.method_name))
-        corpora.MmCorpus.serialize("{}_cop.mm".format(self.method_name), self.corpus)
-        self.lda.save("{}_lda.model".format(self.method_name))
-        self.doc_index.save("{}_sim".format(self.method_name))
-        self.df.to_pickle("{}_df".format(self.method_name))
+        base_dir = os.path.dirname(os.path.abspath(__file__)) + '/bin'
+        self.dic.save_as_text("{}/{}_dict.txt".format(base_dir, self.method_name))
+        corpora.MmCorpus.serialize("{}/{}_cop.mm".format(base_dir, self.method_name), self.corpus)
+        self.lda.save("{}/{}_lda.model".format(base_dir, self.method_name))
+        self.doc_index.save("{}/{}_sim".format(base_dir, self.method_name))
+        # self.df.to_pickle("{}/{}_df".format(base_dir, self.method_name))
+        with open("{}/{}_df_list".format(base_dir, self.method_name), 'wb') as f:
+            pickle.dump(self.df_list, f)
+        elapsed_time = time.time() - self.start_time
+        print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
