@@ -58,3 +58,14 @@ def review2tokens_by_adjective(reviews, stopwords):
                 # print(feature)
                 tokens.append(surface)
     return tokens
+
+
+def review2tokens_by_nouns_and_adjectives(reviews, stopwords):
+    tokens = []
+    for review in reviews:
+        for chunk in mecab.parse(review).splitlines()[:-1]:
+            (surface, feature) = chunk.split('\t')
+            if surface in stopwords:
+                if feature.startswith('形容詞') or feature.startswith('名詞'):
+                    tokens.append(surface)
+    return tokens
