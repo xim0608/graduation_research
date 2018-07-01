@@ -27,3 +27,16 @@ class Recommend:
     def show_base_and_recommend(self, base_doc_id):
         s = Spot.objects.get(id=base_doc_id)
         return s, self.find(base_doc_id)
+
+    def show_topics(self, doc_id):
+        topics = sorted(self.lda.get_document_topics(self.corpus[doc_id]), key=lambda t: t[1], reverse=True)
+        for t in topics[:10]:
+            print("{}: {}".format(t[0], t[1]))
+        for t in topics[:10]:
+            print("Topic # ", t[0])
+            self.get_topic_words(t[0])
+            print("\n")
+
+    def get_topic_words(self, topic_id):
+        for t in self.lda.get_topic_terms(topic_id):
+            print("{}: {}".format(self.d[t[0]], t[1]))
