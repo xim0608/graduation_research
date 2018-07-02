@@ -66,6 +66,23 @@ def review2tokens_by_nouns_and_adjectives(reviews, stopwords):
         for chunk in mecab.parse(review).splitlines()[:-1]:
             (surface, feature) = chunk.split('\t')
             if surface in stopwords:
-                if feature.startswith('形容詞') or feature.startswith('名詞'):
-                    tokens.append(surface)
+                continue
+            if feature.startswith('形容詞') or feature.startswith('名詞'):
+                tokens.append(surface)
+    return tokens
+
+
+def review2tokens_by_lemma(reviews, stopwords):
+    tokens = []
+    for review in reviews:
+        node = mecab.parseToNode(review)
+        while node:
+            pos = node.feature.split(",")[0]
+            if pos in ["名詞", "動詞", "形容詞"]:
+                lemma = node.feature.split(",")[6].decode("utf-8")
+                if lemma == u"*":
+                    lemma = node.surface.decode("utf-8")
+                if lemma not in stopwords:
+                    tokens.append(lemma)
+            node = node.next
     return tokens

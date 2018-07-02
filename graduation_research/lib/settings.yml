@@ -16,3 +16,9 @@ nouns_and_adjectives:
   passes: 10
   num_topics: 50
   preprocess_method: review2tokens_by_nouns_and_adjectives
+normalize_words:
+  no_below: 5
+  no_above: 0.2
+  passes: 10
+  num_topics: 50
+  preprocess_method: review2tokens_by_lemma
