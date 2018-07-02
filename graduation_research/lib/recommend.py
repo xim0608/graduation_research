@@ -2,6 +2,7 @@ from gensim import models, similarities, corpora
 from review_based_recommender.models import Spot
 import pickle
 import os
+import yaml
 
 
 class Recommend:
