@@ -135,3 +135,19 @@ def review2tokens_by_lemma_of_nouns_without_area(reviews, stopwords):
                     tokens.append(lemma)
             node = node.next
     return tokens
+
+
+def review2tokens_by_lemma_of_nouns_without_proper_nouns(reviews, stopwords):
+    tokens = []
+    for review in reviews:
+        node = mecab.parseToNode(review)
+        while node:
+            pos = node.feature.split(",")[0]
+            if pos in ["名詞"]:
+                lemma = node.feature.split(",")[6]
+                if lemma == "*":
+                    lemma = node.surface
+                if lemma not in stopwords and node.feature.split(",")[1] != "固有名詞":
+                    tokens.append(lemma)
+            node = node.next
+    return tokens

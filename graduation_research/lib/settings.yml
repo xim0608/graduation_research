@@ -47,3 +47,15 @@ normalize_except_area_nouns_and_station:
   passes: 10
   num_topics: 50
   preprocess_method: review2tokens_by_lemma_of_nouns_without_area_and_station
+normalize_except_proper_nouns_fix_area:
+  no_below: 5
+  no_above: 0.2
+  passes: 10
+  num_topics: 50
+  preprocess_method: review2tokens_by_lemma_of_nouns_without_proper_nouns
+normalize_except_area_nouns_and_station_fix_area:
+  no_below: 5
+  no_above: 0.2
+  passes: 10
+  num_topics: 50
+  preprocess_method: review2tokens_by_lemma_of_nouns_without_area_fix_areas
