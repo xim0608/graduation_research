@@ -1,5 +1,6 @@
 from gensim import models, similarities, corpora
 from review_based_recommender.models import Spot
+import numpy as np
 import pickle
 import os
 import yaml
@@ -14,11 +15,22 @@ class Recommend:
         self.doc_index = similarities.docsim.MatrixSimilarity.load("{}/{}_sim".format(base_dir, method_name))
         # self.df = pickle.load(open('{}_df'.format(method_name), 'rb'))
         self.df_list = pickle.load(open('{}/{}_df_list'.format(base_dir, method_name), 'rb'))
+        self.matrix = self.make_matrix()
 
-    def find(self, base_doc_id):
+    def similarity_vec(self, base_doc_id):
         c = self.corpus[base_doc_id]
         vec_lda = self.lda[c]
-        s = self.doc_index.__getitem__(vec_lda)
+        vec = self.doc_index.__getitem__(vec_lda)
+        return vec
+
+    def make_matrix(self):
+        matrix = []
+        for doc_id, spot_id in enumerate(self.df_list):
+            matrix.append(self.similarity_vec(doc_id))
+        return np.matrix(matrix)
+
+    def find(self, base_doc_id):
+        s = self.similarity_vec(base_doc_id)
         s = sorted(enumerate(s), key=lambda t: t[1], reverse=True)
         spot_ids = []
         for doc_id, sim in s[1:10]:
