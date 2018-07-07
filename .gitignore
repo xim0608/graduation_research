@@ -4,3 +4,6 @@ __pycache__/
 .env
 *.log
 .ipynb_checkpoints/
+
+# matrix numpy objects too large to push to github
+*_matrix.npz

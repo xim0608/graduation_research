@@ -15,7 +15,7 @@ class Recommend:
         self.doc_index = similarities.docsim.MatrixSimilarity.load("{}/{}_sim".format(base_dir, method_name))
         # self.df = pickle.load(open('{}_df'.format(method_name), 'rb'))
         self.df_list = pickle.load(open('{}/{}_df_list'.format(base_dir, method_name), 'rb'))
-        self.matrix = self.make_matrix()
+        self.matrix = np.load("{}/{}_matrix.npz".format(base_dir, method_name))['m']
 
     def similarity_vec(self, base_doc_id):
         c = self.corpus[base_doc_id]

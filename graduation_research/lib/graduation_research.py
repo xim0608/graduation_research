@@ -5,6 +5,7 @@ from gensim import corpora, models, similarities
 import os
 import pickle
 import time
+import numpy as np
 
 
 class GraduationResearch:
@@ -24,6 +25,7 @@ class GraduationResearch:
         self.corpus = dic_corpus[1]
         self.lda = self.get_lda()
         self.doc_index = similarities.docsim.MatrixSimilarity(self.lda[self.corpus])
+        self.matrix = self.make_matrix()
 
     def make_df(self):
         # 前処理したdataframeを作成する
@@ -41,6 +43,18 @@ class GraduationResearch:
                                        num_topics=self.setting['num_topics'], passes=self.setting['passes'])
         return lda
 
+    def similarity_vec(self, base_doc_id):
+        c = self.corpus[base_doc_id]
+        vec_lda = self.lda[c]
+        vec = self.doc_index.__getitem__(vec_lda)
+        return vec
+
+    def make_matrix(self):
+        matrix = []
+        for doc_id, spot_id in enumerate(self.df_list):
+            matrix.append(self.similarity_vec(doc_id))
+        return np.matrix(matrix)
+
     def save(self):
         base_dir = os.path.dirname(os.path.abspath(__file__)) + '/bin'
         self.dic.save_as_text("{}/{}_dict.txt".format(base_dir, self.method_name))
@@ -50,5 +64,6 @@ class GraduationResearch:
         # self.df.to_pickle("{}/{}_df".format(base_dir, self.method_name))
         with open("{}/{}_df_list".format(base_dir, self.method_name), 'wb') as f:
             pickle.dump(self.df_list, f)
+        np.savez_compressed("{}/{}_matrix.npz".format(base_dir, self.method_name), m=self.matrix)
         elapsed_time = time.time() - self.start_time
         print("elapsed_time:{0}".format(elapsed_time) + "[sec]")
