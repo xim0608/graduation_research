@@ -7,3 +7,5 @@ __pycache__/
 
 # matrix numpy objects too large to push to github
 *_matrix.npz
+
+.DS_Store
