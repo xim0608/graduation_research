@@ -8,4 +8,7 @@ __pycache__/
 # matrix numpy objects too large to push to github
 *_matrix.npz
 
+# powerpoint tmp files
+~$*
+
 .DS_Store
