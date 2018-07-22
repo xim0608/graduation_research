@@ -31,6 +31,7 @@ class City(models.Model):
     def __unicode__(self):
         return self.name
 
+
 @receiver(post_save, sender=City)
 def create_city(sender, instance, created, **kwargs):
     if created:
