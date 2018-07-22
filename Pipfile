@@ -33,6 +33,7 @@ dask = "*"
 toolz = "*"
 cloudpickle = "*"
 pyyaml = "*"
+djangorestframework = "*"
 
 [dev-packages]
 
