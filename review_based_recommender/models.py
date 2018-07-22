@@ -5,8 +5,6 @@ import os
 import sys
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.dispatch import receiver
-
 
 
 class City(models.Model):
@@ -30,6 +28,8 @@ class City(models.Model):
         else:
             return 'url={}'.format(self.url)
 
+    def __unicode__(self):
+        return self.name
 
 @receiver(post_save, sender=City)
 def create_city(sender, instance, created, **kwargs):
