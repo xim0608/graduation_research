@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'review_based_recommender',
     'django_extensions',
-    'rest_framework'
+    'rest_framework',
+    'silk'
 ]
 
 MIDDLEWARE = [
@@ -57,6 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'graduation_research.urls'
@@ -101,6 +103,16 @@ DATABASES = {
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+        'OPTIONS': {
+            'server_max_value_length': 1024 * 1024 * 2048,
+        }
     }
 }
 
@@ -156,3 +168,7 @@ NOTEBOOK_ARGUMENTS = [
     # directory in the vagrant box to the notebooks
     '--notebook-dir', "./notebooks"
 ]
+
+SILKY_AUTHENTICATION = True  # User must login
+SILKY_AUTHORISATION = True  # User must have permissions
+LOGIN_URL = '/gr_admin'

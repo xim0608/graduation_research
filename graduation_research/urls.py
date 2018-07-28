@@ -23,5 +23,8 @@ urlpatterns = [
     path('spots/', SpotListView.as_view(), name='index'),
     path('spots/<int:pk>', SpotDetailView.as_view(), name='detail'),
     path('search/', views.search),
+    path('api/search/', views.search_api),
     path('gr_admin/', admin.site.urls),
 ]
+
+urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
