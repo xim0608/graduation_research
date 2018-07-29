@@ -36,6 +36,7 @@ pyyaml = "*"
 djangorestframework = "*"
 python-memcached = "*"
 django-silk = "*"
+django-webpack-loader = "*"
 
 [dev-packages]
 

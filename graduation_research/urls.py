@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic import TemplateView
 from review_based_recommender.views import SpotListView, SpotDetailView
 from review_based_recommender import views
 
@@ -22,7 +23,8 @@ urlpatterns = [
     # path('spots/', include('review_based_recommender.urls')),
     path('spots/', SpotListView.as_view(), name='index'),
     path('spots/<int:pk>', SpotDetailView.as_view(), name='detail'),
-    path('search/', views.search),
+    # path('search/', views.search),
+    path('search/', TemplateView.as_view(template_name='index.html'), name='index'),
     path('api/search/', views.search_api),
     path('gr_admin/', admin.site.urls),
 ]
