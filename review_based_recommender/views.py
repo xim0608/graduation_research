@@ -1,4 +1,4 @@
-# from django.shortcuts import render
+from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.views.decorators.csrf import csrf_exempt
@@ -30,7 +30,8 @@ class SpotDetailView(DetailView):
 
 
 def search(request):
-    return HttpResponse("スポット検索画面")
+
+    return render(request, 'review_based_recommender/search.html')
 
 
 @silk_profile(name='recommend search')
@@ -48,7 +49,3 @@ def search_api(request):
         return JsonResponse(to_json)
     else:
         return HttpResponse(status=204)
-# @staff_member_required
-# # /spots/search
-# def search(request):
-#     return HttpResponse("スポット検索画面")
