@@ -12,3 +12,8 @@ __pycache__/
 ~$*
 
 .DS_Store
+
+# JS Files
+/node_modules/
+/assets/bundles/*
+webpack-stats.json

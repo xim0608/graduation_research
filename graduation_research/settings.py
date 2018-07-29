@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'review_based_recommender',
     'django_extensions',
+    'webpack_loader',
     'rest_framework',
     'silk'
 ]
@@ -154,6 +155,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+    }
+}
 
 IPYTHON_ARGUMENTS = [
     '--ext', 'django_extensions.management.notebook_extension',
