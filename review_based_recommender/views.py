@@ -30,9 +30,7 @@ class SpotDetailView(DetailView):
 
 
 def search(request):
-
-    return render(request, 'review_based_recommender/search.html')
-
+    return render(request, 'index.html', {})
 
 @silk_profile(name='recommend search')
 def search_api(request):

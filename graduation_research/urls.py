@@ -17,6 +17,8 @@ from django.contrib import admin
 from django.urls import path, include
 from review_based_recommender.views import SpotListView, SpotDetailView
 from review_based_recommender import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     # path('spots/', include('review_based_recommender.urls')),
@@ -28,3 +30,4 @@ urlpatterns = [
 ]
 
 urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
+urlpatterns += static(settings.STATIC_URL)  # staticディレクトリにルーティング
