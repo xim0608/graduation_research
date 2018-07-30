@@ -1,6 +1,7 @@
 import MeCab
 from graduation_research.lib import word_preprocess
 import urllib.request
+import unicodedata
 
 mecab = MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd')
 mecab.parse('')
@@ -168,3 +169,31 @@ def review2tokens_by_lemma_of_nouns_without_area_fix_areas(reviews, stopwords):
                     tokens.append(lemma)
             node = node.next
     return tokens
+
+
+def review2tokens_by_lemma_of_nouns_without_area_fix_areas_only_japanese(reviews, stopwords):
+    tokens = []
+    for review in reviews:
+        node = mecab.parseToNode(review)
+        while node:
+            pos = node.feature.split(",")[0]
+            if pos in ["名詞"]:
+                lemma = node.feature.split(",")[6]
+                if lemma == "*":
+                    lemma = node.surface
+                if lemma not in stopwords \
+                        and node.feature.split(",")[2] != "地域" and node.feature.split(",")[1] != "固有名詞":
+                    if is_japanese(lemma):
+                        tokens.append(lemma)
+            node = node.next
+    return tokens
+
+
+def is_japanese(string):
+    for ch in string:
+        name = unicodedata.name(ch)
+        if "CJK UNIFIED" in name \
+        or "HIRAGANA" in name \
+        or "KATAKANA" in name:
+            return True
+    return False
