@@ -10,7 +10,9 @@
                     img-top
                     tag="article"
                     style="max-width: 20rem;max-height: 50rem;"
-                    class="mb-2">
+                    class="mb-2"
+                    :class="{'card-border': selected.indexOf(result.id) !== -1}"
+            >
               <p class="card-text">
                 {{ result.title }}
               </p>
@@ -50,6 +52,9 @@
       }
 
     },
+    // computed: {
+    //   selectedCard:
+    // },
     mounted() {
       const self = this
       axios
@@ -66,5 +71,7 @@
 </script>
 
 <style scoped>
-
+  .card-border {
+    border-color: yellow;
+  }
 </style>
