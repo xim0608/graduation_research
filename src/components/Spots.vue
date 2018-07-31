@@ -42,9 +42,9 @@
         const index = self.selected.indexOf(spot_id)
         console.log(index)
         if (index === -1) {
-          self.selected.splice(index, 1)
-        } else {
           self.selected.push(spot_id)
+        } else {
+          self.selected.splice(index, 1)
         }
         console.log(self.selected)
       }
