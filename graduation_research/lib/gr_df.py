@@ -2,6 +2,7 @@ import pandas as pd
 from django_pandas.io import read_frame
 from review_based_recommender.models import Spot, Review, City
 from graduation_research.lib import word_process
+from django.db.models import Count
 
 
 class ReviewData:
@@ -14,7 +15,20 @@ class ReviewData:
 
     @classmethod
     def create_df(cls):
-        reviews = Review.objects.all()
+        # TODO: set in settings.yml
+        #################
+        # 件数を考慮しない
+        #################
+        # reviews = Review.objects.all()
+
+        #################
+        # 件数を考慮する
+        #################
+        target_data = Review.objects.all()
+        groupby_data = target_data.values('spot_id').annotate(total=Count('spot_id')).order_by('total')
+        spots_id = [x['spot_id'] for x in list(filter(lambda n: n['total'] > 5, list(groupby_data)))]
+        reviews = Review.objects.filter(spot_id__in=spots_id)
+
         review_df = read_frame(reviews, fieldnames=['id', 'username', 'title', 'content', 'spot_id'], verbose=False)
         return review_df
 
