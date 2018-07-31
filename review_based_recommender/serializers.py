@@ -9,8 +9,9 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class SpotSerializer(serializers.ModelSerializer):
-    city = CitySerializer()
+    # city = CitySerializer()
 
     class Meta:
         model = Spot
-        fields = ('id', 'base_id', 'title', 'url', 'city')
+        # fields = ('id', 'base_id', 'title', 'url', 'city')
+        fields = ('id', 'title')
