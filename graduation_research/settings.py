@@ -166,6 +166,11 @@ NOTEBOOK_ARGUMENTS = [
     '--notebook-dir', "./notebooks"
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20
+}
+
 SILKY_AUTHENTICATION = True  # User must login
 SILKY_AUTHORISATION = True  # User must have permissions
 LOGIN_URL = '/gr_admin'
