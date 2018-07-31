@@ -14,4 +14,4 @@ class SpotSerializer(serializers.ModelSerializer):
     class Meta:
         model = Spot
         # fields = ('id', 'base_id', 'title', 'url', 'city')
-        fields = ('id', 'title')
+        fields = ('id', 'title', 'url')
