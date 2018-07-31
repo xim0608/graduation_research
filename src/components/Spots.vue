@@ -3,18 +3,20 @@
     <div id="spots">
       <b-row>
         <b-col cols="3" v-for="result in results" :key="result.id">
-          <b-card :title="result.title"
-                  img-src="https://picsum.photos/600/300/?image=25"
-                  img-alt="Image"
-                  img-top
-                  tag="article"
-                  style="max-width: 20rem;max-height: 50rem;"
-                  class="mb-2">
-            <p class="card-text">
-              {{ result.title }}
-            </p>
-            <b-button :href="result.url" variant="primary">Show Reviews</b-button>
-          </b-card>
+          <div @click="clickCard(result.id)">
+            <b-card :title="result.title"
+                    img-src="https://picsum.photos/600/300/?image=25"
+                    img-alt="Image"
+                    img-top
+                    tag="article"
+                    style="max-width: 20rem;max-height: 50rem;"
+                    class="mb-2">
+              <p class="card-text">
+                {{ result.title }}
+              </p>
+              <b-button :href="result.url" variant="primary">Show Reviews</b-button>
+            </b-card>
+          </div>
         </b-col>
       </b-row>
     </div>
@@ -29,8 +31,24 @@
     data: function () {
       return {
         results: [],
-        errored: false
+        errored: false,
+        selected: []
       }
+    },
+    methods: {
+      clickCard: function (spot_id) {
+        const self = this
+        console.log(self.selected)
+        const index = self.selected.indexOf(spot_id)
+        console.log(index)
+        if (index === -1) {
+          self.selected.splice(index, 1)
+        } else {
+          self.selected.push(spot_id)
+        }
+        console.log(self.selected)
+      }
+
     },
     mounted() {
       const self = this
@@ -43,7 +61,7 @@
           console.log(error)
           this.errored = true
         })
-    }
+    },
   }
 </script>
 
