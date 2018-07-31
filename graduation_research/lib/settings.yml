@@ -69,5 +69,12 @@ normalize_except_area_nouns_and_station_fix_area_for_interrim_presentation_wo_en
   no_below: 5
   no_above: 0.2
   passes: 10
-  num_topics: 12
+  num_topics: 5
   preprocess_method: review2tokens_by_lemma_of_nouns_without_area_fix_areas_only_japanese
+normalize_nouns_and_adjectives_except_area_nouns_and_station_for_interrim_presentation_wo_english_8:
+  no_below: 5
+  no_above: 0.2
+  passes: 10
+  num_topics: 8
+  preprocess_method: review2tokens_by_lemma_of_nouns_and_adjectives_without_area_only_japanese
+
