@@ -8,7 +8,9 @@ class MultiSpotsRecommend:
     def find_row(self, doc_id):
         return self.recommend.matrix[doc_id]
 
-    def find(self, doc_ids):
+    def find(self, doc_ids=None, spot_ids=None):
+        if doc_ids is None:
+            doc_ids = list(map(self.recommend.convert_spot_id_to_doc_id, spot_ids))
         doc_ids = list(set(doc_ids))
         vec = self.find_row(doc_ids[0])
         for doc_id in doc_ids[1:]:

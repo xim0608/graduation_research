@@ -17,6 +17,12 @@ class Recommend:
         self.df_list = pickle.load(open('{}/{}_df_list'.format(base_dir, method_name), 'rb'))
         self.matrix = np.load("{}/{}_matrix.npz".format(base_dir, method_name))['m']
 
+    def convert_doc_id_to_spot_id(self, doc_id):
+        return self.df_list[doc_id]
+
+    def convert_spot_id_to_doc_id(self, spot_id):
+        return self.df_list.index(spot_id)
+
     def similarity_vec(self, base_doc_id):
         c = self.corpus[base_doc_id]
         vec_lda = self.lda[c]
@@ -37,11 +43,17 @@ class Recommend:
             spot_ids.append(self.df_list[doc_id])
         return Spot.objects.filter(id__in=spot_ids)
 
-    def show_base_and_recommend(self, base_doc_id):
-        s = Spot.objects.get(id=base_doc_id)
-        return s, self.find(base_doc_id)
+    def show_base_and_recommend(self, doc_id=None, spot_id=None):
+        if spot_id is None:
+            spot_id = self.convert_doc_id_to_spot_id(doc_id)
+        elif doc_id is None:
+            doc_id = self.convert_spot_id_to_doc_id(spot_id)
+        s = Spot.objects.get(id=spot_id)
+        return s, self.find(doc_id)
 
-    def show_topics(self, doc_id):
+    def show_topics(self, doc_id=None, spot_id=None):
+        if doc_id is None:
+            doc_id = self.convert_spot_id_to_doc_id(spot_id)
         topics = sorted(self.lda.get_document_topics(self.corpus[doc_id]), key=lambda t: t[1], reverse=True)
         for t in topics[:10]:
             print("{}: {}".format(t[0], t[1]))
