@@ -17,8 +17,11 @@
         <b-navbar-nav class="ml-auto">
 
           <b-nav-form>
-            <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search"/>
-            <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+            <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search" v-model="keyword"/>
+            <!--<form>-->
+              <!--<input type="text" v-model="keyword" placeholder="Search">-->
+            <!--</form>-->
+            <b-button size="sm" class="my-2 my-sm-0" @click="search">Search</b-button>
           </b-nav-form>
         </b-navbar-nav>
 
@@ -124,6 +127,7 @@
         loading: true,
         recommend_loading: true,
         recommend_errored: false,
+        keyword: '',
         images: {
           noImage: require('../assets/no_image.png')
         }
@@ -146,7 +150,9 @@
             console.log(error)
             this.errored = true
           })
-
+      },
+      search: function(){
+        console.log(this.keyword);
       },
       clickCard: function (spot_id) {
         const self = this
@@ -201,7 +207,7 @@
         const self = this
         self.recommend_loading = true
         axios
-          .get('/api/search', {
+          .get('/api/recommend', {
             params: {
               id: self.selected
             }

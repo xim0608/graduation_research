@@ -44,7 +44,7 @@ class SpotListAPIView(generics.ListAPIView):
 
 
 @silk_profile(name='recommend search')
-def search_api(request):
+def recommend_api(request):
     spots_id = request.GET.getlist('id[]')
     spots_id = [int(i) for i in spots_id]
     if spots_id:
