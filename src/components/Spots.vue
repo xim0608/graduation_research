@@ -59,7 +59,8 @@
         recommends: [],
         nextPage: null,
         distance: -Infinity,
-        loading: true
+        loading: true,
+        recommend_loading: true
       }
     },
     methods: {
@@ -114,7 +115,7 @@
       },
       getRecommend: function () {
         const self = this
-        self.loading = true
+        self.recommend_loading = true
         axios
           .get('/api/search',{
             params: {
@@ -122,9 +123,8 @@
             }
           })
           .then(response => {
-            self.results = response.data.results
-            self.nextPage = response.data.next
-            self.loading = false
+            self.recommends = response.data.results
+            self.recommend_loading = false
           })
           .catch(error => {
             console.log(error)
