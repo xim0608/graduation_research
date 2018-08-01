@@ -156,6 +156,8 @@
       search: function () {
         const self = this
         self.results = []
+        const topscrollTo = scroller()
+        topscrollTo('#top')
 
         self.search_loading = true
         axios
