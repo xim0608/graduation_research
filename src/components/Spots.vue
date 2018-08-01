@@ -60,8 +60,17 @@
         <b-container>
           <div v-for="recommend in recommends">
             <b-row>
-              <b-img :src="recommend.image.url" fluid style="max-width: 150px;"/>
-              <p>{{ recommend.title }}</p>
+              <b-col cols="6">
+                <span v-if="recommend.image.url!==''">
+                  <b-img :src="recommend.image.url" fluid style="max-width: 150px;"/>
+                </span>
+                <span v-else>
+                  <b-img :src="images.noImage" fluid style="max-width: 150px;"/>
+                </span>
+              </b-col>
+              <b-col cols="6">
+                <p>{{ recommend.title }}</p>
+              </b-col>
             </b-row>
             <hr>
           </div>
