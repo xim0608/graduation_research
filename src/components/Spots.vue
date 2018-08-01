@@ -20,7 +20,7 @@
                   Original Update by <u><a class="text-muted" :href="flickrUrl(result.image.owner)">{{ result.image.owner_name }}</a></u>
                 </span>
                   </p>
-                  <b-button :href="result.url" variant="primary">Reviews</b-button>
+                  <a :href="result.url">See Reviews</a>
                 </b-card>
               </div>
             </div>
@@ -29,6 +29,11 @@
       </div>
     </div>
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+    <transition name="fade">
+      <div class="footer" v-show="showRecommend">
+        <b-button @click="" variant="success" size="lg">See Recommend Spots</b-button>
+      </div>
+    </transition>
   </v-container>
 </template>
 
@@ -102,8 +107,8 @@
 
     },
     computed: {
-      showRecommend: function(){
-        return this.selected > 0
+      showRecommend: function () {
+        return this.selected.length > 0
       }
     },
     mounted() {
@@ -128,4 +133,13 @@
 </script>
 
 <style scoped>
+  .footer {
+    background: rgba(45, 45, 45, 0.5);
+    position: fixed;
+    padding: 5px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+  }
 </style>
