@@ -11,7 +11,7 @@
                     tag="article"
                     style="max-width: 20rem;max-height: 50rem;"
                     class="mb-2"
-                    :class="{'card-border': selected.indexOf(result.id) !== -1, 'card-shadow': selected.indexOf(result.id) === -1}"
+                    :class="{'card-border': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
             >
               <p class="card-text">
                 {{ result.title }}
@@ -34,7 +34,8 @@
       return {
         results: [],
         errored: false,
-        selected: []
+        selected: [],
+        recommends: []
       }
     },
     methods: {
@@ -73,8 +74,5 @@
 <style scoped>
   .card-border {
     border: solid 2px yellow;
-  }
-  .card-shadow {
-    box-shadow: 2px 2px gray;
   }
 </style>
