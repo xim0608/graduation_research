@@ -31,11 +31,18 @@
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
     <transition name="fade">
       <div class="footer" v-show="showRecommend">
-        <b-button @click="" variant="warning" size="lg">See Recommend Spots</b-button>
+        <b-btn v-b-modal.recommendModal @click="getRecommend" variant="warning" size="lg">See Recommend Spots</b-btn>
         <b-button @click="selected=[]" variant="danger" size="lg">Clear</b-button>
       </div>
     </transition>
+    <div>
+      <b-modal id="recommendModal">
+        <p>Hello</p>
+        <a href="https://youtube.com">Youtube</a>
+      </b-modal>
+    </div>
   </v-container>
+
 </template>
 
 <script>
@@ -105,6 +112,25 @@
         }
         self.loading = false
       },
+      getRecommend: function () {
+        const self = this
+        self.loading = true
+        axios
+          .get('/api/search',{
+            params: {
+              id: self.selected
+            }
+          })
+          .then(response => {
+            self.results = response.data.results
+            self.nextPage = response.data.next
+            self.loading = false
+          })
+          .catch(error => {
+            console.log(error)
+            this.errored = true
+          })
+      }
 
     },
     computed: {
