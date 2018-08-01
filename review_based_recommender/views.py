@@ -45,9 +45,8 @@ class SpotListAPIView(generics.ListAPIView):
 
 @silk_profile(name='recommend search')
 def search_api(request):
-    spots_id = request.GET.getlist('id')
+    spots_id = request.GET.get('id[]')
     spots_id = [int(i) for i in spots_id]
-    print(spots_id)
     if spots_id:
         spots = msr.find(spot_ids=spots_id)
         s = SpotSerializer(spots, many=True)
