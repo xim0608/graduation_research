@@ -12,19 +12,34 @@
                         class="mb-3 p-2 card-block"
                         :class="{'border-primary': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
                 >
-                  <b-card-img :src="result.image.url"
-                              alt="Image"
-                              top
-                              fluid style="max-height: 200px;"
-                  ></b-card-img>
-                  <b-card-body :title="result.title">
-                    <p class="card-text">
+                  <div v-if="result.image.url!== ''">
+                    <b-card-img :src="result.image.url"
+                                alt="Image"
+                                top
+                                fluid style="max-height: 200px;"
+                    ></b-card-img>
+                    <b-card-body :title="result.title">
+                      <p class="card-text">
                       <span class="text-muted">
                         Original Update by <u><a class="text-muted" :href="flickrUrl(result.image.owner)">{{ result.image.owner_name }}</a></u>
                       </span>
-                    </p>
-                    <a :href="result.url">See Reviews</a>
-                  </b-card-body>
+                      </p>
+                      <a :href="result.url">See Reviews</a>
+                    </b-card-body>
+                  </div>
+                  <div v-else>
+                    <b-card-img :src="images.noImage"
+                                alt="Image"
+                                top
+                                fluid style="max-height: 200px;"
+                    ></b-card-img>
+                    <b-card-body :title="result.title">
+                      <p class="card-text">
+                        Sorry..No Image
+                      </p>
+                      <a :href="result.url">See Reviews</a>
+                    </b-card-body>
+                  </div>
                 </b-card>
               </div>
             </div>
@@ -73,7 +88,10 @@
         distance: -Infinity,
         loading: true,
         recommend_loading: true,
-        recommend_errored: false
+        recommend_errored: false,
+        images: {
+          noImage: require('../assets/no_image.png')
+        }
       }
     },
     methods: {
