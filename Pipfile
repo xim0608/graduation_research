@@ -37,6 +37,7 @@ djangorestframework = "*"
 python-memcached = "*"
 django-silk = "*"
 flickrapi = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

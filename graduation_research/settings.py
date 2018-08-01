@@ -13,12 +13,10 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 import os
 import dotenv
 
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 dotenv.read_dotenv(os.path.join(BASE_DIR, '.env'))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
@@ -30,6 +28,7 @@ SECRET_KEY = 'qolx&e^=o_om@k#nk(v(j*l34pccid--l0)=_!abq(2))*pksy'
 if os.environ.get('DEBUG') == 'TRUE':
     DEBUG = True
     ALLOWED_HOSTS = []
+    CORS_ORIGIN_ALLOW_ALL = True
 else:
     DEBUG = False
     ALLOWED_HOSTS = ['gr.ryuju.com']
@@ -44,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'review_based_recommender',
     'django_extensions',
     'rest_framework',
@@ -58,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'silk.middleware.SilkyMiddleware',
 ]
 
@@ -67,7 +69,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-                os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -82,7 +84,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'graduation_research.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -110,7 +111,6 @@ CACHES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
@@ -129,7 +129,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
 
@@ -143,13 +142,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-  os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 IPYTHON_ARGUMENTS = [
@@ -159,9 +157,9 @@ IPYTHON_ARGUMENTS = [
 ]
 
 NOTEBOOK_ARGUMENTS = [
-    '--ip=0.0.0.0', # reach notebooks from outside
+    '--ip=0.0.0.0',  # reach notebooks from outside
     '--port=8888',  # std port
-    '--no-browser', # don't start browser on start
+    '--no-browser',  # don't start browser on start
     # directory in the vagrant box to the notebooks
     '--notebook-dir', "./notebooks"
 ]
