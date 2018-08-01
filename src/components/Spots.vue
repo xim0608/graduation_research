@@ -6,21 +6,25 @@
           <b-col cols="3" v-for="result in results" :key="result.id">
             <div @click="clickCard(result.id)">
               <div>
-                <b-card :title="result.title"
-                        v-bind:img-src="result.image.url"
-                        img-alt="Image"
-                        img-top
+                <b-card no-body
                         tag="article"
                         style="max-width: 450px;"
                         class="mb-3 p-2 card-block"
                         :class="{'border-primary': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
                 >
-                  <p class="card-text">
-                  <span class="text-muted">
-                  Original Update by <u><a class="text-muted" :href="flickrUrl(result.image.owner)">{{ result.image.owner_name }}</a></u>
-                </span>
-                  </p>
-                  <a :href="result.url">See Reviews</a>
+                  <b-card-img :src="result.image.url"
+                              alt="Image"
+                              top
+                              fluid style="max-height: 200px;"
+                  ></b-card-img>
+                  <b-card-body :title="result.title">
+                    <p class="card-text">
+                      <span class="text-muted">
+                        Original Update by <u><a class="text-muted" :href="flickrUrl(result.image.owner)">{{ result.image.owner_name }}</a></u>
+                      </span>
+                    </p>
+                    <a :href="result.url">See Reviews</a>
+                  </b-card-body>
                 </b-card>
               </div>
             </div>
@@ -40,8 +44,10 @@
         <h3>Recommend Spots</h3>
         <b-container>
           <div v-for="recommend in recommends">
-            <b-img :src="recommend.image.url" fluid style="max-width: 150px;" />
-            <p>{{ recommend.title }}</p>
+            <b-row>
+              <b-img :src="recommend.image.url" fluid style="max-width: 150px;"/>
+              <p>{{ recommend.title }}</p>
+            </b-row>
             <hr>
           </div>
         </b-container>
@@ -124,7 +130,7 @@
         const self = this
         self.recommend_loading = true
         axios
-          .get('/api/search',{
+          .get('/api/search', {
             params: {
               id: self.selected
             }
