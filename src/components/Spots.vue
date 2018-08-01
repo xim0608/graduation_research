@@ -78,7 +78,7 @@
       <infinite-loading @infinite="infiniteHandler"></infinite-loading>
       <transition name="fade">
         <div class="footer" v-show="showRecommend">
-          <b-btn v-b-modal.recommendModal @click="getRecommend" variant="warning" size="lg">See Recommend Spots</b-btn>
+          <b-btn v-b-modal.recommendModal @click="getRecommend" variant="primary" size="lg">See Recommend Spots</b-btn>
           <b-button @click="selected=[]" variant="danger" size="lg">Clear</b-button>
         </div>
       </transition>
