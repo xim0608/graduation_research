@@ -37,8 +37,14 @@
     </transition>
     <div>
       <b-modal id="recommendModal">
-        <p>Hello</p>
-        <a href="https://youtube.com">Youtube</a>
+        <h3>Recommend Spots</h3>
+        <b-container>
+          <div v-for="recommend in recommends">
+            <b-img :src="recommend.image.url" fluid style="max-width: 150px;" />
+            <p>{{ recommend.title }}</p>
+            <hr>
+          </div>
+        </b-container>
       </b-modal>
     </div>
   </v-container>
@@ -60,7 +66,8 @@
         nextPage: null,
         distance: -Infinity,
         loading: true,
-        recommend_loading: true
+        recommend_loading: true,
+        recommend_errored: false
       }
     },
     methods: {
@@ -123,12 +130,13 @@
             }
           })
           .then(response => {
-            self.recommends = response.data.results
+            self.recommends = response.data.recommends
+            console.log(self.recommends)
             self.recommend_loading = false
           })
           .catch(error => {
             console.log(error)
-            this.errored = true
+            this.recommend_errored = true
           })
       }
 
