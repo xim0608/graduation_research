@@ -5,18 +5,19 @@
         <b-col cols="3" v-for="result in results" :key="result.id">
           <div @click="clickCard(result.id)">
             <b-card :title="result.title"
-                    img-src="https://picsum.photos/600/300/?image=25"
+                    img-src="https://farm3.staticflickr.com/2566/3954085314_79c919437d_m.jpg"
                     img-alt="Image"
                     img-top
                     tag="article"
-                    style="max-width: 20rem;max-height: 50rem;"
+                    style="max-width: 250px;"
                     class="mb-2"
                     :class="{'border-primary': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
             >
               <p class="card-text">
                 {{ result.title }}
               </p>
-              <b-button :href="result.url" variant="primary">Show Reviews</b-button>
+              <b-button :href="result.url" variant="primary">Reviews</b-button>
+              <b-button :href="result.url" variant="primary">Image</b-button>
             </b-card>
           </div>
         </b-col>
@@ -72,5 +73,5 @@
 </script>
 
 <style scoped>
-  
+
 </style>
