@@ -31,7 +31,8 @@
     <infinite-loading @infinite="infiniteHandler"></infinite-loading>
     <transition name="fade">
       <div class="footer" v-show="showRecommend">
-        <b-button @click="" variant="success" size="lg">See Recommend Spots</b-button>
+        <b-button @click="" variant="warning" size="lg">See Recommend Spots</b-button>
+        <b-button @click="selected=[]" variant="danger" size="lg">Clear</b-button>
       </div>
     </transition>
   </v-container>
