@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <Header/>
+    <!--<Header/>-->
     <v-content>
       <Spots/>
     </v-content>

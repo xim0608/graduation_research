@@ -1,89 +1,115 @@
 <template>
-  <v-container>
-    <div id="spots">
-      <div class="item-card-container">
-        <b-row>
-          <b-col cols="3" v-for="result in results" :key="result.id">
-            <div @click="clickCard(result.id)">
-              <div>
-                <b-card no-body
-                        tag="article"
-                        style="max-width: 450px;"
-                        class="mb-3 p-2 card-block"
-                        :class="{'border-primary': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
-                >
-                  <div v-if="result.image.url!== ''">
-                    <b-card-img :src="result.image.url"
-                                alt="Image"
-                                top
-                                fluid style="max-height: 200px;"
-                    ></b-card-img>
-                    <b-card-body :title="result.title">
-                      <p class="card-text">
+  <div>
+    <div id="top"></div>
+    <b-navbar toggleable="md" type="dark" variant="info" fixed="top">
+
+      <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+
+      <b-navbar-brand href="#">Review Based Recommendation</b-navbar-brand>
+
+      <b-collapse is-nav id="nav_collapse">
+
+        <b-navbar-nav>
+          <b-nav-item @click="resetSpot">Spots</b-nav-item>
+        </b-navbar-nav>
+
+        <!-- Right aligned nav items -->
+        <b-navbar-nav class="ml-auto">
+
+          <b-nav-form>
+            <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search"/>
+            <b-button size="sm" class="my-2 my-sm-0" type="submit">Search</b-button>
+          </b-nav-form>
+        </b-navbar-nav>
+
+      </b-collapse>
+    </b-navbar>
+    <v-container style="padding-top: 80px;">
+      <div id="spots">
+        <div class="item-card-container">
+          <b-row>
+            <b-col cols="3" v-for="result in results" :key="result.id">
+              <div @click="clickCard(result.id)">
+                <div>
+                  <b-card no-body
+                          tag="article"
+                          style="max-width: 450px;"
+                          class="mb-3 p-2 card-block"
+                          :class="{'border-primary': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
+                  >
+                    <div v-if="result.image.url!== ''">
+                      <b-card-img :src="result.image.url"
+                                  alt="Image"
+                                  top
+                                  fluid style="max-height: 200px;"
+                      ></b-card-img>
+                      <b-card-body :title="result.title">
+                        <p class="card-text">
                       <span class="text-muted">
                         Original Update by <u><a class="text-muted" :href="flickrUrl(result.image.owner)">{{ result.image.owner_name }}</a></u>
                       </span>
-                      </p>
-                      <a :href="result.url">See Reviews</a>
-                    </b-card-body>
-                  </div>
-                  <div v-else>
-                    <b-card-img :src="images.noImage"
-                                alt="Image"
-                                top
-                                fluid style="max-height: 200px;"
-                    ></b-card-img>
-                    <b-card-body :title="result.title">
-                      <p class="card-text">
-                        Sorry..No Image
-                      </p>
-                      <a :href="result.url">See Reviews</a>
-                    </b-card-body>
-                  </div>
-                </b-card>
+                        </p>
+                        <a :href="result.url">See Reviews</a>
+                      </b-card-body>
+                    </div>
+                    <div v-else>
+                      <b-card-img :src="images.noImage"
+                                  alt="Image"
+                                  top
+                                  fluid style="max-height: 200px;"
+                      ></b-card-img>
+                      <b-card-body :title="result.title">
+                        <p class="card-text">
+                          Sorry..No Image
+                        </p>
+                        <a :href="result.url">See Reviews</a>
+                      </b-card-body>
+                    </div>
+                  </b-card>
+                </div>
               </div>
-            </div>
-          </b-col>
-        </b-row>
+            </b-col>
+          </b-row>
+        </div>
       </div>
-    </div>
-    <infinite-loading @infinite="infiniteHandler"></infinite-loading>
-    <transition name="fade">
-      <div class="footer" v-show="showRecommend">
-        <b-btn v-b-modal.recommendModal @click="getRecommend" variant="warning" size="lg">See Recommend Spots</b-btn>
-        <b-button @click="selected=[]" variant="danger" size="lg">Clear</b-button>
-      </div>
-    </transition>
-    <div>
-      <b-modal id="recommendModal">
-        <h3>Recommend Spots</h3>
-        <b-container>
-          <div v-for="recommend in recommends">
-            <b-row>
-              <b-col cols="6">
+      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+      <transition name="fade">
+        <div class="footer" v-show="showRecommend">
+          <b-btn v-b-modal.recommendModal @click="getRecommend" variant="warning" size="lg">See Recommend Spots</b-btn>
+          <b-button @click="selected=[]" variant="danger" size="lg">Clear</b-button>
+        </div>
+      </transition>
+      <div>
+        <b-modal id="recommendModal" title="Recommend Spots">
+          <b-container>
+            <div v-for="recommend in recommends">
+              <b-row>
+                <b-col cols="6">
                 <span v-if="recommend.image.url!==''">
                   <b-img :src="recommend.image.url" fluid style="max-width: 150px;"/>
                 </span>
-                <span v-else>
+                  <span v-else>
                   <b-img :src="images.noImage" fluid style="max-width: 150px;"/>
                 </span>
-              </b-col>
-              <b-col cols="6">
-                <p>{{ recommend.title }}</p>
-              </b-col>
-            </b-row>
-            <hr>
-          </div>
-        </b-container>
-      </b-modal>
-    </div>
-  </v-container>
-
+                </b-col>
+                <b-col cols="6">
+                  <p>{{ recommend.title }}</p>
+                </b-col>
+              </b-row>
+              <hr>
+            </div>
+          </b-container>
+        </b-modal>
+      </div>
+    </v-container>
+  </div>
 </template>
 
 <script>
   import axios from 'axios';
   import InfiniteLoading from 'vue-infinite-loading';
+  import VueScrollTo from 'vue-scrollto';
+  import {scroller} from 'vue-scrollto/src/scrollTo';
 
   export default {
     name: "Spots",
@@ -104,6 +130,24 @@
       }
     },
     methods: {
+      resetSpot: function (e) {
+        const self = this
+        const topscrollTo = scroller()
+        topscrollTo('#top')
+        self.loading = true
+        axios
+          .get('/api/spots')
+          .then(response => {
+            self.results = response.data.results
+            self.nextPage = response.data.next
+            self.loading = false
+          })
+          .catch(error => {
+            console.log(error)
+            this.errored = true
+          })
+
+      },
       clickCard: function (spot_id) {
         const self = this
         console.log(self.selected)
@@ -195,7 +239,8 @@
         })
     },
     components: {
-      InfiniteLoading
+      InfiniteLoading,
+      VueScrollTo
     }
   }
 </script>
