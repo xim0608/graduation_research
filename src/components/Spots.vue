@@ -16,10 +16,11 @@
                       :class="{'border-primary': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
               >
                 <p class="card-text">
-                  {{ result.title }}
+                  <span class="text-muted">
+                  Original Update by <u><a class="text-muted" :href="flickrUrl(result.image.owner)">{{ result.image.owner_name }}</a></u>
+                </span>
                 </p>
                 <b-button :href="result.url" variant="primary">Reviews</b-button>
-                <b-button :href="result.url" variant="primary">Image</b-button>
               </b-card>
             </div>
           </div>
@@ -54,6 +55,10 @@
           self.selected.splice(index, 1)
         }
         console.log(self.selected)
+      },
+      flickrUrl: function(owner){
+        const self = this;
+        return 'https://www.flickr.com/photos/' + owner
       }
 
     },
