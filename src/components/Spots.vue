@@ -1,20 +1,18 @@
 <template>
   <v-container>
     <div id="spots">
-        <div class="card-columns">
-                <div class="item-card-container" v-scroll="infiniteScroll">
-
-          <div v-for="result in results" :key="result.id">
+      <div class="item-card-container">
+        <b-row>
+          <b-col cols="3" v-for="result in results" :key="result.id">
             <div @click="clickCard(result.id)">
               <div>
                 <b-card :title="result.title"
-                        img-src="https://farm3.staticflickr.com/2566/3954085314_79c919437d_m.jpg"
                         v-bind:img-src="result.image.url"
                         img-alt="Image"
                         img-top
                         tag="article"
                         style="max-width: 450px;"
-                        class="mb-3 p-2"
+                        class="mb-3 p-2 card-block"
                         :class="{'border-primary': selected.indexOf(result.id) !== -1, 'shadow': selected.indexOf(result.id) === -1}"
                 >
                   <p class="card-text">
@@ -26,15 +24,17 @@
                 </b-card>
               </div>
             </div>
-          </div>
-        </div>
+          </b-col>
+        </b-row>
       </div>
     </div>
+    <infinite-loading @infinite="infiniteHandler"></infinite-loading>
   </v-container>
 </template>
 
 <script>
   import axios from 'axios';
+  import InfiniteLoading from 'vue-infinite-loading';
 
   export default {
     name: "Spots",
@@ -44,7 +44,9 @@
         errored: false,
         selected: [],
         recommends: [],
-        nextPage: null
+        nextPage: null,
+        distance: -Infinity,
+        loading: true
       }
     },
     methods: {
@@ -77,36 +79,51 @@
             this.errored = true
           })
       },
-      infiniteScroll: function (event) {
-        // スクロールの現在位置 + 親（.item-container）の高さ >= スクロール内のコンテンツの高さ
-        // console.log(event.target.scrollingElement.scrollTop + event.target.scrollingElement.offsetHeight)
-        // console.log(event.target.scrollingElement.scrollHeight)
-        // console.log(window.height)
-
-        // if ((event.target.scrollingElement.scrollTop + event.target.scrollingElement.offsetHeight) >= event.target.scrollingElement.scrollHeight) {
-        if ((event.currentTarget.scrollTop + event.currentTarget.offsetHeight - 500) >= event.currentTarget.scrollHeight) {
-          console.log(event.target.scrollingElement.scrollHeight)
-          // this.fetch();
+      infiniteHandler($state) {
+        if (self.loading !== true) {
+          self.loading = true
+          setTimeout(() => {
+            const self = this
+            axios
+              .get(this.nextPage)
+              .then(response => {
+                self.results = self.results.concat(response.data.results)
+                self.nextPage = response.data.next
+              })
+              .catch(error => {
+                console.log(error)
+                this.errored = true
+              })
+            $state.loaded();
+          }, 2000);
         }
-      }
+        self.loading = false
+      },
 
     },
-    // computed: {
-    //   selectedCard:
-    // },
+    computed: {
+      showRecommend: function(){
+        return this.selected > 0
+      }
+    },
     mounted() {
       const self = this
+      self.loading = true
       axios
         .get('/api/spots')
         .then(response => {
           self.results = response.data.results
           self.nextPage = response.data.next
+          self.loading = false
         })
         .catch(error => {
           console.log(error)
           this.errored = true
         })
     },
+    components: {
+      InfiniteLoading
+    }
   }
 </script>
 
