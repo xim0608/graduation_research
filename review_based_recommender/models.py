@@ -94,6 +94,19 @@ def create_spot(sender, instance, created, **kwargs):
             instance.save()
 
 
+class SpotImage(models.Model):
+    class Meta:
+        db_table = 'spot_images'
+    spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
+    url = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    license = models.IntegerField()
+    height = models.IntegerField()
+    width = models.IntegerField()
+    owner = models.CharField(max_length=255)
+    owner_name = models.CharField(max_length=255)
+
+
 class Review(models.Model):
     username = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
