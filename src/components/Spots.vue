@@ -18,9 +18,6 @@
 
           <b-nav-form>
             <b-form-input size="sm" class="mr-sm-2" type="text" placeholder="Search" v-model="keyword"/>
-            <!--<form>-->
-              <!--<input type="text" v-model="keyword" placeholder="Search">-->
-            <!--</form>-->
             <b-button size="sm" class="my-2 my-sm-0" @click="search">Search</b-button>
           </b-nav-form>
         </b-navbar-nav>
@@ -29,6 +26,9 @@
     </b-navbar>
     <v-container style="padding-top: 80px;">
       <div id="spots">
+        <div id="loading-circle" v-show="search_loading" style="padding-top: 300px;text-align: center;">
+          <search-loading-circle></search-loading-circle>
+        </div>
         <div class="item-card-container">
           <b-row>
             <b-col cols="3" v-for="result in results" :key="result.id">
@@ -113,6 +113,7 @@
   import InfiniteLoading from 'vue-infinite-loading';
   import VueScrollTo from 'vue-scrollto';
   import {scroller} from 'vue-scrollto/src/scrollTo';
+  import {Circle as SearchLoadingCircle} from 'vue-loading-spinner'
 
   export default {
     name: "Spots",
@@ -127,6 +128,7 @@
         loading: true,
         recommend_loading: true,
         recommend_errored: false,
+        search_loading: false,
         keyword: '',
         images: {
           noImage: require('../assets/no_image.png')
@@ -151,8 +153,25 @@
             this.errored = true
           })
       },
-      search: function(){
-        console.log(this.keyword);
+      search: function () {
+        const self = this
+        self.results = []
+
+        self.search_loading = true
+        axios
+          .get('/api/search', {
+            params: {
+              q: self.keyword
+            }
+          })
+          .then(response => {
+            self.results = response.data.spots
+            self.search_loading = false
+          })
+          .catch(error => {
+            console.log(error)
+            this.errored = true
+          })
       },
       clickCard: function (spot_id) {
         const self = this
@@ -246,7 +265,8 @@
     },
     components: {
       InfiniteLoading,
-      VueScrollTo
+      VueScrollTo,
+      SearchLoadingCircle
     }
   }
 </script>

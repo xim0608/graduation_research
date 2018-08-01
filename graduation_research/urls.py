@@ -27,6 +27,7 @@ urlpatterns = [
     path('search/', views.search),
     path('api/spots/', SpotListAPIView.as_view()),
     path('api/recommend/', views.recommend_api),
+    path('api/search/', views.search_api),
     path('gr_admin/', admin.site.urls),
 ]
 

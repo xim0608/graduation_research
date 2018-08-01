@@ -12,6 +12,7 @@
   "dependencies": {
     "vue": "^2.5.2",
     "vue-infinite-loading": "^2.3.1",
+    "vue-loading-spinner": "^1.0.11",
     "vue-scrollto": "^2.11.0",
     "vuetify": "^1.0.0"
   },

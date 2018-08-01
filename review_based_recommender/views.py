@@ -57,3 +57,18 @@ def recommend_api(request):
         return JsonResponse(to_json)
     else:
         return HttpResponse(status=204)
+
+@silk_profile(name='simple search')
+def search_api(request):
+    query = request.GET.get('q')
+    if query:
+        # spots = msr.find(spot_ids=spots_id)
+        spots = Spot.objects.filter(count__gt=5, title__contains=query)
+        s = SpotSerializer(spots, many=True)
+        print(s.data)
+        to_json = {
+            'spots': s.data
+        }
+        return JsonResponse(to_json)
+    else:
+        return HttpResponse(status=204)
