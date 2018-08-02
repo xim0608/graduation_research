@@ -38,6 +38,7 @@ python-memcached = "*"
 django-silk = "*"
 flickrapi = "*"
 django-cors-headers = "*"
+django-filter = "*"
 
 [dev-packages]
 

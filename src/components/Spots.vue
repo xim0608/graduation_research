@@ -26,9 +26,9 @@
     </b-navbar>
     <v-container style="padding-top: 80px;">
       <div id="spots">
-        <div id="loading-circle" v-show="search_loading" style="padding-top: 300px;text-align: center;">
-          <search-loading-circle></search-loading-circle>
-        </div>
+        <!--<div id="loading-circle" v-show="search_loading" style="padding-top: 300px;text-align: center;">-->
+        <!--<search-loading-circle></search-loading-circle>-->
+        <!--</div>-->
         <div class="item-card-container">
           <b-row>
             <b-col cols="3" v-for="result in results" :key="result.id">
@@ -75,7 +75,11 @@
           </b-row>
         </div>
       </div>
-      <infinite-loading @infinite="infiniteHandler"></infinite-loading>
+      <infinite-loading @infinite="infiniteHandler" :on-infinite="onInfinite">
+        <span slot="no-more">
+          no more contents dorobow.
+        </span>
+      </infinite-loading>
       <transition name="fade">
         <div class="footer" v-show="showRecommend">
           <b-btn v-b-modal.recommendModal @click="getRecommend" variant="primary" size="lg">See Recommend Spots</b-btn>
@@ -160,14 +164,16 @@
         topscrollTo('#top')
 
         self.search_loading = true
+        self.nextPage = null
         axios
-          .get('/api/search', {
+          .get('/api/spots', {
             params: {
               q: self.keyword
             }
           })
           .then(response => {
-            self.results = response.data.spots
+            self.results = response.data.results
+            self.nextPage = response.data.next
             self.search_loading = false
           })
           .catch(error => {
@@ -205,7 +211,11 @@
           })
       },
       infiniteHandler($state) {
-        if (self.loading !== true) {
+        const self = this
+        console.log(self.nextPage)
+        if (self.nextPage === null) {
+          $state.complete()
+        } else {
           self.loading = true
           setTimeout(() => {
             const self = this

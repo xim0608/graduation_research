@@ -11,6 +11,7 @@ from graduation_research.lib.multiple_instance_recommend import MultipleInstance
 from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from .serializers import SpotSerializer
+from django_filters import rest_framework as filters
 from silk.profiling.profiler import silk_profile
 
 
@@ -40,7 +41,13 @@ def search(request):
 class SpotListAPIView(generics.ListAPIView):
     permission_classes = (AllowAny,)
     serializer_class = SpotSerializer
-    queryset = Spot.objects.filter(count__gt=5)
+
+    def get_queryset(self):
+        queryset = Spot.objects.filter(count__gt=5)
+        q = self.request.query_params.get('q', None)
+        if q is not None:
+            queryset = queryset.filter(title__contains=q)
+        return queryset
 
 
 @silk_profile(name='recommend search')

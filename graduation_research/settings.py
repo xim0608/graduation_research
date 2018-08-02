@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'review_based_recommender',
     'django_extensions',
     'rest_framework',
+    'django_filters',
     'silk'
 ]
 
@@ -166,6 +167,7 @@ NOTEBOOK_ARGUMENTS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
     'PAGE_SIZE': 20
 }
 
