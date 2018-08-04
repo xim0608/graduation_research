@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Spot, CityTask, SpotImage
+from .models import Spot, SpotImage
 
 
 class CitySerializer(serializers.ModelSerializer):
