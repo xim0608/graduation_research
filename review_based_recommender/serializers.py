@@ -4,8 +4,8 @@ from .models import Spot, CityTask, SpotImage
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = CityTask
-        fields = ('name', 'url')
+        model = City
+        fields = ('name')
 
 
 class SpotImageSerializer(serializers.ModelSerializer):

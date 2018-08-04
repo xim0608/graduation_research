@@ -1,11 +1,9 @@
 from django.core.management.base import BaseCommand
-from selenium import webdriver
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException
-import time
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 from retry import retry
 from ...models import Spot, Review, SpreadsheetData
 import sys

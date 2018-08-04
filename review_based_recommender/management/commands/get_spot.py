@@ -1,12 +1,9 @@
 from django.core.management.base import BaseCommand
-from ...models import Spot, Review, SpreadsheetData, CityTask
+from review_based_recommender.models import Spot, CityTask
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
-import time
 
 
 class Command(BaseCommand):

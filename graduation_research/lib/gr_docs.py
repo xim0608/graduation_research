@@ -1,7 +1,4 @@
-import pandas as pd
-from django_pandas.io import read_frame
-from review_based_recommender.models import Spot, Review, CityTask
-from gensim import corpora, models
+from gensim import corpora
 
 
 class GrDocs:

@@ -1,6 +1,5 @@
-import pandas as pd
 from django_pandas.io import read_frame
-from review_based_recommender.models import Spot, Review, CityTask
+from review_based_recommender.models import Review
 from graduation_research.lib import word_process
 from django.db.models import Count
 
