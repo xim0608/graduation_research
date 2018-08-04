@@ -34,3 +34,5 @@ class Command(BaseCommand):
                         spot.city = city
                         spot.save()
                         continue
+        elif options['type'] == 'city_task_to_city_appends':
+            pass

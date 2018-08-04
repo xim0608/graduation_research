@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException, \
     WebDriverException
+from review_based_recommender.models import City, CityAppend
 import time
 from retry import retry
 from ...models import Spot, Review, SpreadsheetData
@@ -29,6 +30,7 @@ class Command(BaseCommand):
         self.browser = Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.browser, self.delay)
         self.actions = ActionChains(self.browser)
+        self.pref_name = None
 
     @retry(TimeoutException, tries=3, delay=2)
     def get_review_volume(self, first_page):
@@ -60,6 +62,7 @@ class Command(BaseCommand):
                 if more_content_button:
                     self.browser.implicitly_wait(1.5)
                     more_content_button.click()
+                    self.browser.implicitly_wait(1.5)
                 else:
                     has_more_contents = False
             except WebDriverException as e:
@@ -78,20 +81,22 @@ class Command(BaseCommand):
         # 都道府県ID
         ############
         h1 = self.browser.find_element_by_tag_name('h1').text
-        pref_name = h1.split('の旅行情報')[0]
-        print(pref_name)
-
+        self.pref_name = h1.split('の旅行情報')[0]
+        print(self.pref_name)
 
         self.press_more_contents()
         self.browser.implicitly_wait(3)
-        elements = self.browser.find_elements_by_css_selector('.popularCity.hoverHighlight')
+        elements = self.browser.find_elements_by_xpath('//a[@class="popularCity hoverHighlight"]')
+        print(elements)
 
         for element in elements:
             city = {}
             url = element.get_attribute('href')
             city_id = url.split('Tourism-')[1].split('-')[0]
             print(city_id)
-            city_name = element.find_element_by_class_name('name').text
+            # FIXME: ここでよくコケる
+            city_name = element.text.split('\n')[1]
+
             city['name'] = city_name
             city['id'] = city_id
             cities.append(city)
@@ -108,6 +113,7 @@ class Command(BaseCommand):
         pref_id = options['pref-id']
         url = "https://tripadvisor.jp/Tourism-" + pref_id + ".html"
         # page = 1
+        cities = []
         try:
             cities = self.get_page_by_sel(url=url)
             print(cities)
@@ -120,3 +126,22 @@ class Command(BaseCommand):
             print(e)
         finally:
             self.browser.close()
+
+        city_names = ''.join(list(map(lambda c: c.name, City.objects.filter(prefecture__name=self.pref_name))))
+        for city in cities:
+            print(city)
+            c = None
+            if not ('市' in city['name'] or '区' in city['name'] or '町' in city['name'] or '村' in city['name'])\
+                    or not city['name'] in city_names:
+                print('no name')
+                continue
+            elif city['name'] == '緑区' or city['name'] == '南区':
+                c = City.objects.filter(name__contains=city['name'], prefecture__name=self.pref_name)
+                c = c[0]
+            elif '区' in city['name']:
+                c = City.objects.get(name__contains=city['name'], prefecture__name=self.pref_name)
+            else:
+                # 神奈川には緑区が2つある
+                c = City.objects.filter(name=city['name'], prefecture__name=self.pref_name)
+                c = c[0]
+            city_append = CityAppend.objects.get_or_create(city=c, ta_area_id=city['id'])
