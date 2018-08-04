@@ -7,16 +7,6 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-# class City(models.Model):
-#     class Meta:
-#         db_table = 'cities'
-#     id = models.IntegerField(primary_key=True)
-#     name = models.CharField(max_length=20)
-#     name_kana = models.CharField(max_length=50)
-#     lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
-#     lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
-#     prefecture = models.ForeignKey(Prefecture)
-
 class Prefecture(models.Model):
     class Meta:
         db_table = 'prefectures'
@@ -26,6 +16,17 @@ class Prefecture(models.Model):
     name_kana = models.CharField(max_length=50)
     lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
     lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+
+
+class City(models.Model):
+    class Meta:
+        db_table = 'cities'
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=20)
+    name_kana = models.CharField(max_length=50)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+    prefecture = models.ForeignKey(Prefecture, on_delete=models.PROTECT)
 
 
 class CityTask(models.Model):
