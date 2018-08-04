@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...models import Spot, Review, SpreadsheetData, City
+from ...models import Spot, Review, SpreadsheetData, CityTask
 import subprocess
 import random
 import os
@@ -12,8 +12,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         urls = self.spreadsheet.get_set_city_url()
-        City.import_urls(urls)
-        remained_cities = City.objects.filter(finish=False)
+        CityTask.import_urls(urls)
+        remained_cities = CityTask.objects.filter(finish=False)
         if len(remained_cities) > 0:
             city = remained_cities[0]
             print(city.base_id)

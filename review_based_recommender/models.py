@@ -7,7 +7,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
-class City(models.Model):
+class CityTask(models.Model):
     base_id = models.CharField(max_length=200, null=True, blank=True)
     name = models.CharField(max_length=200, null=True, blank=True)
     url = models.CharField(max_length=200, unique=True)
@@ -20,7 +20,7 @@ class City(models.Model):
     @classmethod
     def import_urls(cls, urls):
         for url in urls:
-            City.objects.get_or_create(url=url)
+            CityTask.objects.get_or_create(url=url)
 
     def __str__(self):
         if self.count != 0:
@@ -32,7 +32,7 @@ class City(models.Model):
         return self.name
 
 
-@receiver(post_save, sender=City)
+@receiver(post_save, sender=CityTask)
 def create_city(sender, instance, created, **kwargs):
     if created:
         # set spot base id
@@ -49,7 +49,7 @@ class Spot(models.Model):
     total_count = models.IntegerField(default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    city_task = models.ForeignKey(CityTask, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         if self.count != 0:

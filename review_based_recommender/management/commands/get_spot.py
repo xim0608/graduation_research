@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...models import Spot, Review, SpreadsheetData, City
+from ...models import Spot, Review, SpreadsheetData, CityTask
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -93,7 +93,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         city_id = options['city-id']
-        self.city = City.objects.get(base_id=city_id)
+        self.city = CityTask.objects.get(base_id=city_id)
         url = self.city.url
         print(url)
         try:

@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Spot, City, SpotImage
+from .models import Spot, CityTask, SpotImage
 
 
 class CitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = City
+        model = CityTask
         fields = ('name', 'url')
 
 
