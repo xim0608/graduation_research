@@ -27,6 +27,11 @@ class City(models.Model):
     lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
     prefecture = models.ForeignKey(Prefecture, on_delete=models.PROTECT)
 
+    def _get_url(self):
+        city_append = CityAppend.objects.get(city_id=self.id)
+        return 'https://www.tripadvisor.jp/Attractions-' + city_append.ta_area_id + '.html'
+    url = property(_get_url)
+
 
 class CityAppend(models.Model):
     class Meta:
