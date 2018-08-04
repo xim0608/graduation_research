@@ -71,6 +71,7 @@ class Spot(models.Model):
     total_count = models.IntegerField(default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     city_task = models.ForeignKey(CityTask, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
