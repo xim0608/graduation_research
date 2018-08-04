@@ -28,8 +28,7 @@ class City(models.Model):
     prefecture = models.ForeignKey(Prefecture, on_delete=models.PROTECT)
 
     def _get_url(self):
-        city_append = CityAppend.objects.get(city_id=self.id)
-        return 'https://www.tripadvisor.jp/Attractions-' + city_append.ta_area_id + '.html'
+        return 'https://www.tripadvisor.jp/Attractions-' + self.cityappend.ta_area_id + '.html'
     url = property(_get_url)
 
 
