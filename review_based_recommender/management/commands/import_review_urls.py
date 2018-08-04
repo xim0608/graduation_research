@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from ...models import Spot, SpreadsheetData
 
+
 class Command(BaseCommand):
     def __init__(self):
         self.spreadsheet = SpreadsheetData()

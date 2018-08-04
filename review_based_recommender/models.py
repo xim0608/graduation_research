@@ -7,6 +7,27 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+# class City(models.Model):
+#     class Meta:
+#         db_table = 'cities'
+#     id = models.IntegerField(primary_key=True)
+#     name = models.CharField(max_length=20)
+#     name_kana = models.CharField(max_length=50)
+#     lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+#     lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+#     prefecture = models.ForeignKey(Prefecture)
+
+class Prefecture(models.Model):
+    class Meta:
+        db_table = 'prefectures'
+
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=20)
+    name_kana = models.CharField(max_length=50)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+
+
 class CityTask(models.Model):
     base_id = models.CharField(max_length=200, null=True, blank=True)
     name = models.CharField(max_length=200, null=True, blank=True)
@@ -97,6 +118,7 @@ def create_spot(sender, instance, created, **kwargs):
 class SpotImage(models.Model):
     class Meta:
         db_table = 'spot_images'
+
     spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
     url = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
@@ -141,8 +163,8 @@ class SpreadsheetData():
         flags = self.sh.col_values(6)
         spot_ids = self.sh.col_values(2)
         reviews_num = self.sh.col_values(4)
-        del(spot_ids[0])
-        del(flags[0])
+        del (spot_ids[0])
+        del (flags[0])
         tasks = []
         for idx, spot_id in enumerate(spot_ids):
             try:
@@ -161,7 +183,7 @@ class SpreadsheetData():
 
     def set_spot_id(self):
         url_list = self.sh.col_values(1)
-        del(url_list[0])
+        del (url_list[0])
         print(url_list)
         spot_ids = []
         for url in url_list:
@@ -173,7 +195,7 @@ class SpreadsheetData():
                 print("url error: {}".format(url))
                 print("Unexpected error:", sys.exc_info()[0])
                 spot_ids.append('')
-        cell_list = self.sh.range("B2:B{}".format(len(url_list)+1))
+        cell_list = self.sh.range("B2:B{}".format(len(url_list) + 1))
         for index, cell in enumerate(cell_list):
             cell.value = spot_ids[index]
         self.sh.update_cells(cell_list)

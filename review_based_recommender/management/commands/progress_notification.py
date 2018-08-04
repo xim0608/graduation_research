@@ -5,6 +5,7 @@ from logging import getLogger, StreamHandler, Formatter, FileHandler
 import slackweb
 import os
 
+
 class Command(BaseCommand):
     def __init__(self):
         BaseCommand.__init__(self)
