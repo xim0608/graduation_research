@@ -5,10 +5,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
 from retry import retry
-from ...models import Spot, Review, SpreadsheetData
+from ...models import Spot, Review, ZipCode, City
 import sys
 import os
 import traceback
+import json
 from selenium.webdriver.common.action_chains import ActionChains
 
 
@@ -21,14 +22,18 @@ class Command(BaseCommand):
         BaseCommand.__init__(self)
         chrome_options = ChromeOptions()
         chrome_options.add_argument('--user-agent=' + self.user_agent)
-        chrome_options.add_argument('--headless')
+        # chrome_options.add_argument('--headless')
         chrome_options.add_argument('--window-size=1280,1024')
+        self.delay = 10
         self.browser = Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.browser, self.delay)
         self.actions = ActionChains(self.browser)
+        self.spot = None
 
     @retry(TimeoutException, tries=3, delay=2)
     def get_review_volume(self, first_page):
+        self.browser.implicitly_wait(3)
+        print('try to get review volume')
         num = 0
         title = ""
         el_present = EC.presence_of_element_located((By.ID, 'taplc_location_reviews_list_responsive_detail_0'))
@@ -43,6 +48,7 @@ class Command(BaseCommand):
                 number = self.browser.find_element_by_xpath("//label[(contains(@for, 'taplc_location_review_filter_controls_responsive_0_filterLang_ja'))]/span")
                 num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
             title = self.browser.find_element_by_tag_name('h1').text
+
         print("Page is ready")
         return num, title
 
@@ -64,7 +70,6 @@ class Command(BaseCommand):
     def get_page_by_sel(self, url, first_page=False):
         print(url)
         self.browser.get(url)
-        # self.browser.implicitly_wait(3)
         num, title = self.get_review_volume(first_page)
         first_page_info = (num, title)
         self.press_more_content()
@@ -133,6 +138,18 @@ class Command(BaseCommand):
             print(now_recorded_count)
             if now_recorded_count == 0:
                 page_reviews, first_page_info = self.get_page_by_sel(url, first_page=True)
+                self.wait.until(EC.presence_of_element_located((By.XPATH, "//div/script[@type='application/ld+json']")))
+                breadcrumb_json = self.browser.find_element_by_xpath("//div/script[@type='application/ld+json']")\
+                    .get_attribute('innerHTML')
+                if breadcrumb_json:
+                    breadcrumb = json.loads(breadcrumb_json)
+                    for list_item in reversed(breadcrumb['itemListElement']):
+                        ta_area_id = list_item["@id"].split('-')[1].split('-')[0]
+                        c = City.objects.filter(cityappend__ta_area_id=ta_area_id)
+                        if len(c) > 0:
+                            self.spot.city = c[0]
+                            self.spot.save()
+                            break
                 title = first_page_info[1]
                 page_num = first_page_info[0]
                 self.record_first_page_info(title, page_num)

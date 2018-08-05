@@ -46,6 +46,13 @@ class CityAppend(models.Model):
     finish = models.BooleanField(default=False)
 
 
+class ZipCode(models.Model):
+    class Meta:
+        db_table = 'zip_codes'
+    zip_code = models.IntegerField(primary_key=True)
+    city = models.ForeignKey(City, on_delete=models.PROTECT)
+
+
 class CityTask(models.Model):
     base_id = models.CharField(max_length=200, null=True, blank=True)
     name = models.CharField(max_length=200, null=True, blank=True)
