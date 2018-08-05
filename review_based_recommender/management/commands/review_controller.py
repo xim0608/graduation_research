@@ -10,6 +10,7 @@ class Command(BaseCommand):
         self.base_command = ['python', 'manage.py', 'get_review', '--spot-id']
 
     def handle(self, *args, **options):
+        # スポット詳細ページからレビューを取得
         do_flag = True
         while do_flag:
             remained_tasks = Spot.remained_tasks()
