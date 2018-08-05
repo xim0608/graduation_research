@@ -85,7 +85,7 @@ class Command(BaseCommand):
             # urlに含まれるarea_idがcitiesのta_area_idと等しい、
             # もしくはurlに含まれるarea_idがcitiesのta_area_idに存在しない場合(東京都とか関東とか)
             if self.city.cityappend.ta_area_id == area_id or \
-                    len(City.objects.filter(prefecture__city__id=self.city.id, cityappend__ta_area_id=area_id)) < 1:
+                    City.objects.filter(prefecture__city__id=self.city.id, cityappend__ta_area_id=area_id).count() < 1:
                 s = Spot.objects.get_or_create(url=spot['url'])[0]
                 s.city = self.city
                 s.save()
