@@ -89,8 +89,6 @@ class Command(BaseCommand):
             city = {}
             url = element.get_attribute('href')
             city_id = url.split('Tourism-')[1].split('-')[0]
-            print(city_id)
-            # FIXME: ここでよくコケる
             city_name = element.text.split('\n')[1]
 
             city['name'] = city_name
