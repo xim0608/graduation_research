@@ -36,7 +36,8 @@ class Command(BaseCommand):
         print('try to get review volume')
         num = 0
         title = ""
-        el_present = EC.presence_of_element_located((By.ID, 'taplc_location_reviews_list_responsive_detail_0'))
+        el_present = EC.presence_of_element_located(
+            (By.XPATH, '//*[@id="taplc_location_reviews_list_responsive_detail_0"]'))
         self.wait.until(el_present)
         if first_page:
             try:
@@ -67,9 +68,14 @@ class Command(BaseCommand):
         except WebDriverException as e:
             print(e)
 
+    def check_popup(self):
+        pass
+
     def get_page_by_sel(self, url, first_page=False):
         print(url)
         self.browser.get(url)
+
+        self.check_popup()
         num, title = self.get_review_volume(first_page)
         first_page_info = (num, title)
         self.press_more_content()
