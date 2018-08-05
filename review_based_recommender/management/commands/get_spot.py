@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from review_based_recommender.models import Spot, CityTask
+from review_based_recommender.models import Spot, City
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
@@ -21,6 +21,7 @@ class Command(BaseCommand):
         self.wait = WebDriverWait(self.browser, self.delay)
         self.actions = ActionChains(self.browser)
         self.after_clawl_list = []
+        self.counter = 0
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -36,11 +37,7 @@ class Command(BaseCommand):
         last_page_num = 0
         if first_page:
             last_page_num = int(elements[0].find_element_by_xpath('//*[@class="pageNumbers"]/a[position()=last()]').text.replace(',', ''))
-            #.split('観光スポット')[1].split('件')[0].replace(',', ''))
             print(last_page_num)
-            title = self.browser.find_element_by_tag_name('h1').text
-            self.city.title = title
-            self.city.save()
         for element in elements:
             url = element.find_element_by_class_name('listing_title').find_element_by_tag_name('a').get_attribute('href')
             try:
@@ -84,17 +81,24 @@ class Command(BaseCommand):
 
     def save_spots(self, spots):
         for spot in spots:
-            s = Spot.objects.get_or_create(url=spot['url'])[0]
-            s.city = self.city
-            s.save()
+            area_id = spot['url'].split('Attraction_Review-')[1].split('-')[0]
+            # urlに含まれるarea_idがcitiesのta_area_idと等しい、
+            # もしくはurlに含まれるarea_idがcitiesのta_area_idに存在しない場合(東京都とか関東とか)
+            if self.city.cityappend.ta_area_id == area_id or \
+                    len(City.objects.filter(prefecture__city__id=self.city.id, cityappend__ta_area_id=area_id)) < 1:
+                s = Spot.objects.get_or_create(url=spot['url'])[0]
+                s.city = self.city
+                s.save()
+                self.counter += 1
 
     def handle(self, *args, **options):
         city_id = options['city-id']
-        self.city = CityTask.objects.get(base_id=city_id)
-        url = self.city.url
-        print(url)
+        self.city = City.objects.get(cityappend__ta_area_id=city_id)
+        base_url = self.city.url
+        print(base_url)
         try:
-            last_page_num, spots = self.get_page(url, first_page=True)
+            last_page_num, spots = self.get_page(base_url, first_page=True)
+            url = self.browser.current_url
             self.save_spots(spots)
             url_list = []
             for i in range(1, last_page_num):
@@ -113,7 +117,8 @@ class Command(BaseCommand):
                     if url == self.browser.current_url:
                         size = 0
                     oa_count += 30
-            self.city.finish = True
-            self.city.save()
+            self.city.cityappend.finish = True
+            self.city.cityappend.save()
         finally:
             self.browser.close()
+        print(self.counter)
