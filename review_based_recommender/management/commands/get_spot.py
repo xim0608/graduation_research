@@ -41,9 +41,9 @@ class Command(BaseCommand):
         for element in elements:
             url = element.find_element_by_class_name('listing_title').find_element_by_tag_name('a').get_attribute('href')
             try:
-                content = int(element.find_element_by_class_name('more').text.split('件')[0].replace(',', ''))
-                print("url: {}, total_count: {}".format(url, content))
-                spots.append({"url": url, "content": content})
+                total_count = int(element.find_element_by_class_name('more').text.split('件')[0].replace(',', ''))
+                print("url: {}, total_count: {}".format(url, total_count))
+                spots.append({"url": url, "total_count": total_count})
             except NoSuchElementException:
                 if 'Attractions' in url:
                     print('add crawling_list to {}'.format(url))
@@ -67,9 +67,9 @@ class Command(BaseCommand):
             if url is None:
                 continue
             try:
-                content = int(element.find_element_by_class_name('more').text.split('件')[0].replace(',', ''))
-                print("url: {}, total_count: {}".format(url, content))
-                spots.append({"url": url, "content": content})
+                total_count = int(element.find_element_by_class_name('more').text.split('件')[0].replace(',', ''))
+                print("url: {}, total_count: {}".format(url, total_count))
+                spots.append({"url": url, "total_count": total_count})
             except NoSuchElementException:
                 if 'Attractions' in url:
                     print('add crawling_list to {}'.format(url))
@@ -84,9 +84,11 @@ class Command(BaseCommand):
             area_id = spot['url'].split('Attraction_Review-')[1].split('-')[0]
             # urlに含まれるarea_idがcitiesのta_area_idと等しい、
             # もしくはurlに含まれるarea_idがcitiesのta_area_idに存在しない場合(東京都とか関東とか)
+            print(spot)
             if self.city.cityappend.ta_area_id == area_id or \
                     City.objects.filter(prefecture__city__id=self.city.id, cityappend__ta_area_id=area_id).count() < 1:
                 s = Spot.objects.get_or_create(url=spot['url'])[0]
+                s.total_count = spot['total_count']
                 s.city = self.city
                 s.save()
                 self.counter += 1

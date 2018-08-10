@@ -11,6 +11,7 @@ import os
 import traceback
 import json
 from selenium.webdriver.common.action_chains import ActionChains
+import time
 
 
 class Command(BaseCommand):
@@ -30,22 +31,48 @@ class Command(BaseCommand):
         self.actions = ActionChains(self.browser)
         self.spot = None
 
-    @retry((TimeoutException, NoSuchElementException), tries=3, delay=2)
+    # @retry((TimeoutException, NoSuchElementException), tries=3, delay=2)
     def get_review_volume(self, first_page):
-        self.browser.implicitly_wait(3)
         print('try to get review volume')
         num = 0
         title = ""
         el_present = EC.visibility_of_element_located(
             (By.XPATH, '//*[@id="REVIEWS"]'))
         self.wait.until(el_present)
+
+        # while True:
+        #     if len(self.browser.find_elements_by_xpath('//label[(contains(@for, "filters_detail_language_filterLang_ja"))]/span')) > 0:
+        #         break
+        #     else:
+        #         print('try again.....')
+        #         self.browser.refresh()
+        #         self.browser.implicitly_wait(3)
+
         if first_page:
-            number = self.browser.find_element_by_xpath(
-                "//label[(contains(@for, 'taplc_location_review_filter_controls_responsive_0_filterLang_ja'))]/span"
-            )
-            num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
             title = self.browser.find_element_by_tag_name('h1').text
 
+            for i in range(5):
+                more_than_10 = self.browser.find_elements_by_xpath(
+                    '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
+                less_than_10 = self.browser.find_elements_by_xpath(
+                        '//label[@for="taplc_location_review_filter_controls_responsive_0_filterLang_ja"]/span')
+                if len(more_than_10) > 0:
+                    # more than 10 reviews page
+                    number = more_than_10[0]
+                    num = int(number.text.replace(',', ''))
+                    break
+                elif len(less_than_10) > 0:
+                    # less than 10 reviews page
+                    number = less_than_10[0]
+                    num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
+                    break
+                else:
+                    print('try again...')
+                    self.browser.refresh()
+                    self.browser.implicitly_wait(3)
+                    el_present = EC.visibility_of_element_located(
+                        (By.XPATH, '//*[@id="REVIEWS"]'))
+                    self.wait.until(el_present)
         print("Page is ready")
         return num, title
 
@@ -84,14 +111,9 @@ class Command(BaseCommand):
         except TimeoutException:
             print("timeout line 80")
             self.press_more_content()
-        elements = self.browser.find_elements_by_css_selector('.review.hsx_review')
+        elements = self.browser.find_elements_by_class_name('review-container')
         reviews = []
         for element in elements:
-            # try:
-            #     self.actions.move_to_element(element).perform()
-            # except:
-            #     print("move to element failed")
-
             try:
                 invisible_more_content = EC.invisibility_of_element_located(
                     (By.XPATH, '//span[contains(text(), "さらに表示") and @class="taLnk ulBlueLinks"]'))
