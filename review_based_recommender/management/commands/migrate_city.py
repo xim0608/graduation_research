@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...models import Spot, City, CityTask, CityAppend
+from ...models import Spot, City
 import re
 
 
@@ -34,9 +34,3 @@ class Command(BaseCommand):
                         spot.city = city
                         spot.save()
                         continue
-        elif options['type'] == 'city_task_to_city_appends':
-            finished_tasks = CityTask.objects.filter(finish=1)
-            for city in finished_tasks:
-                c = CityAppend.objects.get(ta_area_id=city.base_id)
-                c.finish = True
-                c.save()
