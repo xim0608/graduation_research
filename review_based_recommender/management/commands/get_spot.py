@@ -88,7 +88,7 @@ class Command(BaseCommand):
             if self.city.cityappend.ta_area_id == area_id or \
                     City.objects.filter(prefecture__city__id=self.city.id, cityappend__ta_area_id=area_id).count() < 1:
                 s = Spot.objects.get_or_create(url=spot['url'])[0]
-                s.total_count = spot['total_count']
+                s.all_lang_total_count = spot['total_count']
                 s.city = self.city
                 s.save()
                 self.counter += 1

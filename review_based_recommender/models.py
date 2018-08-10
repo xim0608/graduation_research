@@ -93,8 +93,10 @@ class Spot(models.Model):
     url = models.CharField(max_length=200, unique=True)
     count = models.IntegerField(default=0, null=True, blank=True)
     total_count = models.IntegerField(default=None, null=True, blank=True)
+    all_lang_total_count = models.IntegerField(default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_updatable = models.BooleanField(default=False)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     city_task = models.ForeignKey(CityTask, on_delete=models.SET_NULL, null=True)
 
