@@ -53,40 +53,6 @@ class ZipCode(models.Model):
     city = models.ForeignKey(City, on_delete=models.PROTECT)
 
 
-class CityTask(models.Model):
-    base_id = models.CharField(max_length=200, null=True, blank=True)
-    name = models.CharField(max_length=200, null=True, blank=True)
-    url = models.CharField(max_length=200, unique=True)
-    count = models.IntegerField(default=0, null=True, blank=True)
-    total_count = models.IntegerField(default=None, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    finish = models.BooleanField(default=False)
-
-    @classmethod
-    def import_urls(cls, urls):
-        for url in urls:
-            CityTask.objects.get_or_create(url=url)
-
-    def __str__(self):
-        if self.count != 0:
-            return 'city={}, count={}/{}'.format(self.name, self.count, self.total_count)
-        else:
-            return 'url={}'.format(self.url)
-
-    def __unicode__(self):
-        return self.name
-
-
-@receiver(post_save, sender=CityTask)
-def create_city(sender, instance, created, **kwargs):
-    if created:
-        # set spot base id
-        tmp = instance.url.split('Attractions-')[1].split('-Activities')[0]
-        instance.base_id = tmp
-        instance.save()
-
-
 class Spot(models.Model):
     base_id = models.CharField(max_length=200, null=True, blank=True)
     title = models.CharField(max_length=200, null=True, blank=True)
