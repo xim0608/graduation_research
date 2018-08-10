@@ -67,6 +67,7 @@ class Command(BaseCommand):
                     print('failed to get review volume')
                     raise TimeoutException
                 else:
+                    # TODO: add new page type notification to slack
                     print('try again...')
                     self.browser.refresh()
                     self.browser.implicitly_wait(3)
