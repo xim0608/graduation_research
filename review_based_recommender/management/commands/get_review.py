@@ -44,10 +44,15 @@ class Command(BaseCommand):
             title = self.browser.find_element_by_tag_name('h1').text
             retry_count = 5
             for i in range(retry_count):
+                less_than_10 = []
                 more_than_10 = self.browser.find_elements_by_xpath(
                     '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
-                less_than_10 = self.browser.find_elements_by_xpath(
+                if len(more_than_10) == 0:
+                    less_than_10 = self.browser.find_elements_by_xpath(
                         '//label[@for="taplc_location_review_filter_controls_responsive_0_filterLang_ja"]/span')
+                if len(less_than_10) == 0:
+                    less_than_10.extend(self.browser.find_elements_by_xpath(
+                        '//label[@for="filters_detail_language_filterLang_ja"]/span'))
                 if len(more_than_10) > 0:
                     # more than 10 reviews page
                     number = more_than_10[0]
