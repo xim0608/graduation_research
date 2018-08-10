@@ -28,26 +28,6 @@ class Command(BaseCommand):
         self.actions = ActionChains(self.browser)
         self.pref_name = None
 
-    @retry(TimeoutException, tries=3, delay=2)
-    def get_review_volume(self, first_page):
-        num = 0
-        title = ""
-        el_present = EC.presence_of_element_located((By.ID, 'taplc_location_reviews_list_responsive_detail_0'))
-        self.wait.until(el_present)
-        if first_page:
-            try:
-                number = self.browser.find_element_by_xpath(
-                    '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
-                num = int(number.text.replace(',', ''))
-            except NoSuchElementException:
-                # number = self.browser.find_element_by_xpath('//*[@id="REVIEWS"]/div[1]/div/span[2]')
-                number = self.browser.find_element_by_xpath(
-                    "//label[(contains(@for, 'taplc_location_review_filter_controls_responsive_0_filterLang_ja'))]/span")
-                num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
-            title = self.browser.find_element_by_tag_name('h1').text
-        print("Page is ready")
-        return num, title
-
     def press_more_contents(self):
         has_more_contents = True
         while has_more_contents:
