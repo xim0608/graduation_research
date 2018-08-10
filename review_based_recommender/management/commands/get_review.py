@@ -40,18 +40,10 @@ class Command(BaseCommand):
             (By.XPATH, '//*[@id="REVIEWS"]'))
         self.wait.until(el_present)
 
-        # while True:
-        #     if len(self.browser.find_elements_by_xpath('//label[(contains(@for, "filters_detail_language_filterLang_ja"))]/span')) > 0:
-        #         break
-        #     else:
-        #         print('try again.....')
-        #         self.browser.refresh()
-        #         self.browser.implicitly_wait(3)
-
         if first_page:
             title = self.browser.find_element_by_tag_name('h1').text
-
-            for i in range(5):
+            retry_count = 5
+            for i in range(retry_count):
                 more_than_10 = self.browser.find_elements_by_xpath(
                     '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
                 less_than_10 = self.browser.find_elements_by_xpath(
@@ -66,6 +58,9 @@ class Command(BaseCommand):
                     number = less_than_10[0]
                     num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
                     break
+                elif i + 1 == retry_count:
+                    print('failed to get review volume')
+                    raise TimeoutException
                 else:
                     print('try again...')
                     self.browser.refresh()
