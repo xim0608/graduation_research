@@ -136,7 +136,7 @@ class Command(BaseCommand):
     @classmethod
     def make_list(cls, url, num, count=10):
         url_list = []
-        for i in range(count, int(num / 10) * 10 + 10, 10):
+        for i in range(int(count/10)*10, int(num / 10) * 10 + 10, 10):
             url_list.append(url.replace('.html', '-or{}.html'.format(i)))
         return url_list
 
