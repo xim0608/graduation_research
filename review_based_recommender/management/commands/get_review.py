@@ -30,24 +30,20 @@ class Command(BaseCommand):
         self.actions = ActionChains(self.browser)
         self.spot = None
 
-    @retry(TimeoutException, tries=3, delay=2)
+    @retry((TimeoutException, NoSuchElementException), tries=3, delay=2)
     def get_review_volume(self, first_page):
         self.browser.implicitly_wait(3)
         print('try to get review volume')
         num = 0
         title = ""
-        el_present = EC.presence_of_element_located(
-            (By.XPATH, '//*[@id="taplc_location_reviews_list_responsive_detail_0"]'))
+        el_present = EC.visibility_of_element_located(
+            (By.XPATH, '//*[@id="REVIEWS"]'))
         self.wait.until(el_present)
         if first_page:
-            try:
-                number = self.browser.find_element_by_xpath(
-                    '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
-                num = int(number.text.replace(',', ''))
-            except NoSuchElementException:
-                # number = self.browser.find_element_by_xpath('//*[@id="REVIEWS"]/div[1]/div/span[2]')
-                number = self.browser.find_element_by_xpath("//label[(contains(@for, 'taplc_location_review_filter_controls_responsive_0_filterLang_ja'))]/span")
-                num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
+            number = self.browser.find_element_by_xpath(
+                "//label[(contains(@for, 'taplc_location_review_filter_controls_responsive_0_filterLang_ja'))]/span"
+            )
+            num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
             title = self.browser.find_element_by_tag_name('h1').text
 
         print("Page is ready")
@@ -69,7 +65,9 @@ class Command(BaseCommand):
             print(e)
 
     def check_popup(self):
-        pass
+        l = self.browser.find_elements_by_xpath('//*[@id="taplc_slide_up_messaging_0"]/div')
+        if len(l) > 0:
+            self.browser.find_element_by_xpath('//*[@id="taplc_slide_up_messaging_0"]/div/span').click()
 
     def get_page_by_sel(self, url, first_page=False):
         print(url)
@@ -89,10 +87,10 @@ class Command(BaseCommand):
         elements = self.browser.find_elements_by_css_selector('.review.hsx_review')
         reviews = []
         for element in elements:
-            try:
-                self.actions.move_to_element(element).perform()
-            except:
-                print("move to element failed")
+            # try:
+            #     self.actions.move_to_element(element).perform()
+            # except:
+            #     print("move to element failed")
 
             try:
                 invisible_more_content = EC.invisibility_of_element_located(
@@ -117,7 +115,8 @@ class Command(BaseCommand):
 
     def record_reviews(self, reviews):
         for review in reviews:
-            r = Review.objects.get_or_create(username=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=self.spot)[0]
+            r = Review.objects.get_or_create(username=review['uid'], title=review['title'], content=review['content'],
+                                             rating=int(review['rating']), spot=self.spot)[0]
             r.save()
         self.spot.update_count(count=len(reviews))
 
@@ -145,7 +144,7 @@ class Command(BaseCommand):
             if now_recorded_count == 0:
                 page_reviews, first_page_info = self.get_page_by_sel(url, first_page=True)
                 self.wait.until(EC.presence_of_element_located((By.XPATH, "//div/script[@type='application/ld+json']")))
-                breadcrumb_json = self.browser.find_element_by_xpath("//div/script[@type='application/ld+json']")\
+                breadcrumb_json = self.browser.find_element_by_xpath("//div/script[@type='application/ld+json']") \
                     .get_attribute('innerHTML')
                 if breadcrumb_json:
                     breadcrumb = json.loads(breadcrumb_json)
