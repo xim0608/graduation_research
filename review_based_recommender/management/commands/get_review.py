@@ -121,7 +121,12 @@ class Command(BaseCommand):
             except TimeoutException:
                 print("timeout line 94")
                 self.press_more_content()
-            uid = element.find_element_by_xpath('.//div[@class="username mo"]').text
+
+            uids = element.find_elements_by_xpath('.//div[@class="username mo"]')
+            if len(uids) > 0:
+                uid = uids[0].text
+            else:
+                uid = element.find_element_by_xpath('.//div[@class="info_text"]/div').text
             title = element.find_element_by_class_name('noQuotes').text
             content = element.find_element_by_class_name('partial_entry').text
             rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
