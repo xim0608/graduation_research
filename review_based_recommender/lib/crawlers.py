@@ -31,11 +31,11 @@ class PrefPage:
             try:
                 more_content_button = self.browser.find_element_by_css_selector(
                     '.morePopularCities.ui_button.primary.chevron')
-                print(more_content_button)
+                # print(more_content_button)
                 if more_content_button:
-                    self.browser.implicitly_wait(1.5)
+                    self.browser.implicitly_wait(3)
                     more_content_button.click()
-                    self.browser.implicitly_wait(1.5)
+                    self.browser.implicitly_wait(3)
                 else:
                     has_more_contents = False
             except WebDriverException as e:
@@ -61,7 +61,7 @@ class PrefPage:
         self.press_more_contents()
         self.browser.implicitly_wait(3)
         elements = self.browser.find_elements_by_xpath('//a[@class="popularCity hoverHighlight"]')
-        print(elements)
+        # print(elements)
 
         for element in elements:
             city = {}
@@ -103,7 +103,7 @@ class PrefPage:
         cities = []
         try:
             cities = self.get_page_by_sel(url=url)
-            print(cities)
+            # print(cities)
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -124,6 +124,18 @@ class PrefPage:
                     or not city['name'] in city_names:
                 print('no name')
                 continue
+            elif (self.prefecture.name == '大阪府') and ('区' in city['name']):
+                c = City.objects.filter(name__contains='大阪市' + city['name'], prefecture=self.prefecture)
+                c = c[0]
+            elif (self.prefecture.name == '兵庫県') and ('区' in city['name']):
+                c = City.objects.filter(name__contains='神戸市' + city['name'], prefecture=self.prefecture)
+                c = c[0]
+            elif (self.prefecture.name == '兵庫県') and ('区' in city['name']):
+                c = City.objects.filter(name__contains='神戸市' + city['name'], prefecture=self.prefecture)
+                c = c[0]
+            elif (self.prefecture.name == '福岡県') and ('東区' == city['name']):
+                c = City.objects.filter(name__contains='福岡市' + city['name'], prefecture=self.prefecture)
+                c = c[0]
             elif city['name'] == '緑区' or city['name'] == '南区':
                 c = City.objects.filter(name__contains=city['name'], prefecture=self.prefecture)
                 c = c[0]
