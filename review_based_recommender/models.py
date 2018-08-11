@@ -1,68 +1,11 @@
 from django.db import models
 from oauth2client.service_account import ServiceAccountCredentials
-from locations.models import Prefecture as NPrefecture, City as NCity
+from locations.models import City
 import gspread
 import os
 import sys
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
-
-class Prefecture(models.Model):
-    class Meta:
-        db_table = 'prefectures_old'
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=20)
-    name_kana = models.CharField(max_length=50)
-    lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
-    lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
-
-
-class PrefectureAppend(models.Model):
-    class Meta:
-        db_table = 'prefecture_appends_old'
-    prefecture = models.OneToOneField(
-        Prefecture,
-        on_delete=models.CASCADE,
-        primary_key=True
-    )
-    base_id = models.CharField(max_length=255, unique=True)
-
-
-class City(models.Model):
-    class Meta:
-        db_table = 'cities_old'
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=20)
-    name_kana = models.CharField(max_length=50)
-    lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
-    lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
-    prefecture = models.ForeignKey(Prefecture, on_delete=models.PROTECT)
-
-    def _get_url(self):
-        return 'https://www.tripadvisor.jp/Attractions-' + self.cityappend.ta_area_id + '.html'
-    url = property(_get_url)
-
-
-class CityAppend(models.Model):
-    class Meta:
-        db_table = 'city_appends_old'
-    city = models.OneToOneField(
-        City,
-        on_delete=models.CASCADE,
-        primary_key=True
-    )
-    ta_area_id = models.CharField(max_length=255, unique=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    finish = models.BooleanField(default=False)
-
-
-class ZipCode(models.Model):
-    class Meta:
-        db_table = 'zip_codes_old'
-    zip_code = models.IntegerField(primary_key=True)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
 
 
 class Spot(models.Model):
@@ -75,7 +18,7 @@ class Spot(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_updatable = models.BooleanField(default=False)
-    city = models.ForeignKey(NCity, on_delete=models.SET_NULL, null=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         if self.count != 0:
@@ -123,7 +66,6 @@ def create_spot(sender, instance, created, **kwargs):
 class SpotImage(models.Model):
     class Meta:
         db_table = 'spot_images'
-
     spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
     url = models.CharField(max_length=255)
     title = models.CharField(max_length=255)

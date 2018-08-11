@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand
-from review_based_recommender.models import Spot, City
+from review_based_recommender.models import Spot
+from locations.models import City
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException

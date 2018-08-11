@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import WebDriverException
-from review_based_recommender.models import City, CityAppend, Prefecture
+from locations.models import City, CityAppend, Prefecture
 import sys
 import os
 import traceback
