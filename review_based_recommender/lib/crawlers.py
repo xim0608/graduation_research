@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import WebDriverException
-from locations.models import City, CityAppend, Prefecture
+from locations.models import City, CityAppend, Prefecture, PrefectureAppend
 import sys
 import os
 import traceback
@@ -56,6 +56,7 @@ class PrefPage:
 
         pref_name = h1.split('の旅行情報')[0]
         self.prefecture = Prefecture.objects.get(name=pref_name)
+        PrefectureAppend.objects.get_or_create(prefecture=self.prefecture, base_id=self.pref_base_id)
 
         self.press_more_contents()
         self.browser.implicitly_wait(3)
