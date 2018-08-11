@@ -12,7 +12,6 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from .serializers import SpotSerializer
 from django_filters import rest_framework as filters
-from silk.profiling.profiler import silk_profile
 
 
 # r1_recommend_method = 'normalize_except_proper_nouns_fix_area'
@@ -50,7 +49,6 @@ class SpotListAPIView(generics.ListAPIView):
         return queryset
 
 
-@silk_profile(name='recommend search')
 def recommend_api(request):
     spots_id = request.GET.getlist('id[]')
     spots_id = [int(i) for i in spots_id]
@@ -65,7 +63,7 @@ def recommend_api(request):
     else:
         return HttpResponse(status=204)
 
-@silk_profile(name='simple search')
+
 def search_api(request):
     query = request.GET.get('q')
     if query:

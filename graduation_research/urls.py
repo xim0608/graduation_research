@@ -31,5 +31,4 @@ urlpatterns = [
     path('gr_admin/', admin.site.urls),
 ]
 
-urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
 urlpatterns += static(settings.STATIC_URL)  # staticディレクトリにルーティング

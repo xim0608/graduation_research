@@ -48,7 +48,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'django_filters',
-    'silk'
 ]
 
 MIDDLEWARE = [
@@ -61,7 +60,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'silk.middleware.SilkyMiddleware',
 ]
 
 ROOT_URLCONF = 'graduation_research.urls'
