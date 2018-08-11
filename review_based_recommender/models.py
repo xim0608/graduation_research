@@ -17,6 +17,17 @@ class Prefecture(models.Model):
     lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
 
 
+class PrefectureAppend(models.Model):
+    class Meta:
+        db_table = 'prefecture_appends'
+    prefecture = models.OneToOneField(
+        Prefecture,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
+    base_id = models.CharField(max_length=255, unique=True)
+
+
 class City(models.Model):
     class Meta:
         db_table = 'cities'
