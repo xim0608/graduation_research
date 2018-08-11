@@ -1,5 +1,6 @@
 from django.db import models
 from oauth2client.service_account import ServiceAccountCredentials
+from locations.models import Prefecture as NPrefecture, City as NCity
 import gspread
 import os
 import sys
@@ -9,7 +10,7 @@ from django.dispatch import receiver
 
 class Prefecture(models.Model):
     class Meta:
-        db_table = 'prefectures'
+        db_table = 'prefectures_old'
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=20)
     name_kana = models.CharField(max_length=50)
@@ -19,7 +20,7 @@ class Prefecture(models.Model):
 
 class PrefectureAppend(models.Model):
     class Meta:
-        db_table = 'prefecture_appends'
+        db_table = 'prefecture_appends_old'
     prefecture = models.OneToOneField(
         Prefecture,
         on_delete=models.CASCADE,
@@ -30,7 +31,7 @@ class PrefectureAppend(models.Model):
 
 class City(models.Model):
     class Meta:
-        db_table = 'cities'
+        db_table = 'cities_old'
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=20)
     name_kana = models.CharField(max_length=50)
@@ -45,7 +46,7 @@ class City(models.Model):
 
 class CityAppend(models.Model):
     class Meta:
-        db_table = 'city_appends'
+        db_table = 'city_appends_old'
     city = models.OneToOneField(
         City,
         on_delete=models.CASCADE,
@@ -59,7 +60,7 @@ class CityAppend(models.Model):
 
 class ZipCode(models.Model):
     class Meta:
-        db_table = 'zip_codes'
+        db_table = 'zip_codes_old'
     zip_code = models.IntegerField(primary_key=True)
     city = models.ForeignKey(City, on_delete=models.PROTECT)
 
