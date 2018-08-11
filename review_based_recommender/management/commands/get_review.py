@@ -1,16 +1,14 @@
 from django.core.management.base import BaseCommand
-from selenium import webdriver
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, StaleElementReferenceException, WebDriverException
-import time
-from retry import retry
-from ...models import Spot, Review, SpreadsheetData
+from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
+from ...models import Spot, Review, ZipCode, City
 import sys
 import os
 import traceback
+import json
 from selenium.webdriver.common.action_chains import ActionChains
 
 
@@ -25,27 +23,84 @@ class Command(BaseCommand):
         chrome_options.add_argument('--user-agent=' + self.user_agent)
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--window-size=1280,1024')
+        self.delay = 10
         self.browser = Chrome(options=chrome_options)
         self.wait = WebDriverWait(self.browser, self.delay)
         self.actions = ActionChains(self.browser)
+        self.spot = None
 
-    @retry(TimeoutException, tries=3, delay=2)
     def get_review_volume(self, first_page):
+        print('try to get review volume')
         num = 0
         title = ""
-        el_present = EC.presence_of_element_located((By.ID, 'taplc_location_reviews_list_responsive_detail_0'))
+        el_present = EC.visibility_of_element_located(
+            (By.XPATH, '//*[@id="REVIEWS"]'))
         self.wait.until(el_present)
+
         if first_page:
-            try:
-                number = self.browser.find_element_by_xpath(
-                    '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
-                num = int(number.text.replace(',', ''))
-            except NoSuchElementException:
-                # number = self.browser.find_element_by_xpath('//*[@id="REVIEWS"]/div[1]/div/span[2]')
-                number = self.browser.find_element_by_xpath("//label[(contains(@for, 'taplc_location_review_filter_controls_responsive_0_filterLang_ja'))]/span")
-                num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
             title = self.browser.find_element_by_tag_name('h1').text
-        print("Page is ready")
+            retry_count = 5
+            for i in range(retry_count):
+                less_than_10 = []
+                more_than_10 = self.browser.find_elements_by_xpath(
+                    '//*[@id="taplc_location_reviews_list_responsive_detail_0"]/div/p/b[1]')
+                if len(more_than_10) == 0:
+                    less_than_10 = self.browser.find_elements_by_xpath(
+                        '//label[@for="taplc_location_review_filter_controls_responsive_0_filterLang_ja"]/span')
+                if len(less_than_10) == 0:
+                    less_than_10.extend(self.browser.find_elements_by_xpath(
+                        '//label[@for="filters_detail_language_filterLang_ja"]/span'))
+                if len(less_than_10) == 0:
+                    # check only english review
+                    header_counts = self.browser.find_elements_by_xpath(
+                        '//*[@id="REVIEWS"]//span[@class="reviews_header_count"]')
+                    en_counts = self.browser.find_elements_by_xpath(
+                        '//label[@for="filters_detail_language_filterLang_en"]/span')
+                    ja = self.browser.find_elements_by_xpath('//label[@for="filters_detail_language_filterLang_ja"]')
+                    if len(header_counts) > 0 and len(en_counts) > 0 and len(ja) > 0:
+                        header_count = int(header_counts[0].text.replace('(', '').replace(')', '').replace(',', ''))
+                        en_count = int(en_counts[0].text.replace('(', '').replace(')', '').replace(',', ''))
+                        if header_count == en_count and ja[0].text == '日本語':
+                            num = 0
+                            break
+                if len(more_than_10) > 0:
+                    # more than 10 reviews page
+                    number = more_than_10[0]
+                    num = int(number.text.replace(',', ''))
+                    break
+                elif len(less_than_10) > 0:
+                    # less than 10 reviews page
+                    number = less_than_10[0]
+                    num = int(number.text.replace('(', '').replace(')', '').replace(',', ''))
+                    break
+                elif i + 1 == retry_count:
+                    print('failed to get review volume')
+                    raise TimeoutException
+                else:
+                    # TODO: add new page type notification to slack
+                    print('try again...')
+                    self.browser.refresh()
+                    self.browser.implicitly_wait(3)
+                    el_present = EC.visibility_of_element_located(
+                        (By.XPATH, '//*[@id="REVIEWS"]'))
+                    self.wait.until(el_present)
+
+            # set location
+            # import pdb;pdb.set_trace()
+            self.wait.until(EC.presence_of_element_located((By.XPATH, "//div/script[@type='application/ld+json']")))
+            breadcrumb_json = self.browser.find_element_by_xpath("//div/script[@type='application/ld+json']")\
+                .get_attribute('innerHTML')
+            if breadcrumb_json:
+                breadcrumb = json.loads(breadcrumb_json)
+                for list_item in reversed(breadcrumb['itemListElement']):
+                    ta_area_id = list_item["@id"].split('-')[1].split('-')[0]
+                    c = City.objects.filter(cityappend__ta_area_id=ta_area_id)
+                    if len(c) > 0:
+                        print(c[0])
+                        self.spot.city = c[0]
+                        self.spot.save()
+                        break
+            print("{} Page is ready. japanese review: {}".format(title, num))
         return num, title
 
     def press_more_content(self):
@@ -63,10 +118,16 @@ class Command(BaseCommand):
         except WebDriverException as e:
             print(e)
 
+    def check_popup(self):
+        l = self.browser.find_elements_by_xpath('//*[@id="taplc_slide_up_messaging_0"]/div')
+        if len(l) > 0:
+            self.browser.find_element_by_xpath('//*[@id="taplc_slide_up_messaging_0"]/div/span').click()
+
     def get_page_by_sel(self, url, first_page=False):
         print(url)
         self.browser.get(url)
-        # self.browser.implicitly_wait(3)
+
+        self.check_popup()
         num, title = self.get_review_volume(first_page)
         first_page_info = (num, title)
         self.press_more_content()
@@ -77,14 +138,9 @@ class Command(BaseCommand):
         except TimeoutException:
             print("timeout line 80")
             self.press_more_content()
-        elements = self.browser.find_elements_by_css_selector('.review.hsx_review')
+        elements = self.browser.find_elements_by_class_name('review-container')
         reviews = []
         for element in elements:
-            try:
-                self.actions.move_to_element(element).perform()
-            except:
-                print("move to element failed")
-
             try:
                 invisible_more_content = EC.invisibility_of_element_located(
                     (By.XPATH, '//span[contains(text(), "さらに表示") and @class="taLnk ulBlueLinks"]'))
@@ -92,7 +148,12 @@ class Command(BaseCommand):
             except TimeoutException:
                 print("timeout line 94")
                 self.press_more_content()
-            uid = element.find_element_by_xpath('.//div[@class="username mo"]').text
+
+            uids = element.find_elements_by_xpath('.//div[@class="username mo"]')
+            if len(uids) > 0:
+                uid = uids[0].text
+            else:
+                uid = element.find_element_by_xpath('.//div[@class="info_text"]/div').text
             title = element.find_element_by_class_name('noQuotes').text
             content = element.find_element_by_class_name('partial_entry').text
             rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
@@ -102,20 +163,21 @@ class Command(BaseCommand):
     @classmethod
     def make_list(cls, url, num, count=10):
         url_list = []
-        for i in range(count, int(num / 10) * 10 + 10, 10):
+        for i in range(int(count/10)*10, int(num / 10) * 10 + 10, 10):
             url_list.append(url.replace('.html', '-or{}.html'.format(i)))
         return url_list
 
     def record_reviews(self, reviews):
+        update_counter = 0
         for review in reviews:
-            r = Review.objects.get_or_create(username=review['uid'], title=review['title'], content=review['content'], rating=int(review['rating']), spot=self.spot)[0]
-            r.save()
-        self.spot.update_count(count=len(reviews))
+            r_s = Review.objects.filter(username=review['uid'], title=review['title'], content=review['content'],
+                                        rating=int(review['rating']), spot=self.spot)
+            if len(r_s) < 1:
+                r = Review.objects.create(username=review['uid'], title=review['title'], content=review['content'],
+                                          rating=int(review['rating']), spot=self.spot)
+                update_counter += 1
 
-    def record_first_page_info(self, title, page_num):
-        self.spot.title = title
-        self.spot.total_count = page_num
-        self.spot.save()
+        self.spot.update_count(count=update_counter)
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -133,16 +195,19 @@ class Command(BaseCommand):
             count = 10
             now_recorded_count = self.spot.count
             print(now_recorded_count)
+            page_reviews, first_page_info = self.get_page_by_sel(url, first_page=True)
+            title = first_page_info[1]
+            reviews_count = first_page_info[0]
+            self.spot.title = title
+            self.spot.total_count = reviews_count
+            self.spot.save()
+
             if now_recorded_count == 0:
-                page_reviews, first_page_info = self.get_page_by_sel(url, first_page=True)
-                title = first_page_info[1]
-                page_num = first_page_info[0]
-                self.record_first_page_info(title, page_num)
                 self.record_reviews(page_reviews)
             else:
-                page_num = self.spot.total_count
+                reviews_count = self.spot.total_count
                 count = now_recorded_count
-            crawling_url_list = self.make_list(url, page_num, count)
+            crawling_url_list = self.make_list(url, reviews_count, count)
             for url in crawling_url_list:
                 page_reviews, first_page_info = self.get_page_by_sel(url)
                 self.record_reviews(page_reviews)
@@ -156,3 +221,4 @@ class Command(BaseCommand):
             print(e)
         finally:
             self.browser.close()
+            self.spot.count = self.spot.review_set.count()

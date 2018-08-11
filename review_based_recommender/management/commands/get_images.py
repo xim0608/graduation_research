@@ -7,10 +7,6 @@ import time
 import traceback
 
 import flickrapi
-from urllib.request import urlretrieve
-
-import sys
-from retry import retry
 
 
 class Command(BaseCommand):

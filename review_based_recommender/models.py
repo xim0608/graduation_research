@@ -7,38 +7,50 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+class Prefecture(models.Model):
+    class Meta:
+        db_table = 'prefectures'
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=20)
+    name_kana = models.CharField(max_length=50)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+
+
 class City(models.Model):
-    base_id = models.CharField(max_length=200, null=True, blank=True)
-    name = models.CharField(max_length=200, null=True, blank=True)
-    url = models.CharField(max_length=200, unique=True)
-    count = models.IntegerField(default=0, null=True, blank=True)
-    total_count = models.IntegerField(default=None, null=True, blank=True)
+    class Meta:
+        db_table = 'cities'
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=20)
+    name_kana = models.CharField(max_length=50)
+    lat = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+    lon = models.DecimalField(max_digits=9, decimal_places=6, default=0)
+    prefecture = models.ForeignKey(Prefecture, on_delete=models.PROTECT)
+
+    def _get_url(self):
+        return 'https://www.tripadvisor.jp/Attractions-' + self.cityappend.ta_area_id + '.html'
+    url = property(_get_url)
+
+
+class CityAppend(models.Model):
+    class Meta:
+        db_table = 'city_appends'
+    city = models.OneToOneField(
+        City,
+        on_delete=models.CASCADE,
+        primary_key=True
+    )
+    ta_area_id = models.CharField(max_length=255, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     finish = models.BooleanField(default=False)
 
-    @classmethod
-    def import_urls(cls, urls):
-        for url in urls:
-            City.objects.get_or_create(url=url)
 
-    def __str__(self):
-        if self.count != 0:
-            return 'city={}, count={}/{}'.format(self.name, self.count, self.total_count)
-        else:
-            return 'url={}'.format(self.url)
-
-    def __unicode__(self):
-        return self.name
-
-
-@receiver(post_save, sender=City)
-def create_city(sender, instance, created, **kwargs):
-    if created:
-        # set spot base id
-        tmp = instance.url.split('Attractions-')[1].split('-Activities')[0]
-        instance.base_id = tmp
-        instance.save()
+class ZipCode(models.Model):
+    class Meta:
+        db_table = 'zip_codes'
+    zip_code = models.IntegerField(primary_key=True)
+    city = models.ForeignKey(City, on_delete=models.PROTECT)
 
 
 class Spot(models.Model):
@@ -47,8 +59,10 @@ class Spot(models.Model):
     url = models.CharField(max_length=200, unique=True)
     count = models.IntegerField(default=0, null=True, blank=True)
     total_count = models.IntegerField(default=None, null=True, blank=True)
+    all_lang_total_count = models.IntegerField(default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_updatable = models.BooleanField(default=False)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -97,6 +111,7 @@ def create_spot(sender, instance, created, **kwargs):
 class SpotImage(models.Model):
     class Meta:
         db_table = 'spot_images'
+
     spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
     url = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
@@ -141,8 +156,8 @@ class SpreadsheetData():
         flags = self.sh.col_values(6)
         spot_ids = self.sh.col_values(2)
         reviews_num = self.sh.col_values(4)
-        del(spot_ids[0])
-        del(flags[0])
+        del (spot_ids[0])
+        del (flags[0])
         tasks = []
         for idx, spot_id in enumerate(spot_ids):
             try:
@@ -161,7 +176,7 @@ class SpreadsheetData():
 
     def set_spot_id(self):
         url_list = self.sh.col_values(1)
-        del(url_list[0])
+        del (url_list[0])
         print(url_list)
         spot_ids = []
         for url in url_list:
@@ -173,7 +188,7 @@ class SpreadsheetData():
                 print("url error: {}".format(url))
                 print("Unexpected error:", sys.exc_info()[0])
                 spot_ids.append('')
-        cell_list = self.sh.range("B2:B{}".format(len(url_list)+1))
+        cell_list = self.sh.range("B2:B{}".format(len(url_list) + 1))
         for index, cell in enumerate(cell_list):
             cell.value = spot_ids[index]
         self.sh.update_cells(cell_list)
