@@ -75,7 +75,7 @@ class Spot(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_updatable = models.BooleanField(default=False)
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    city = models.ForeignKey(NCity, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         if self.count != 0:
