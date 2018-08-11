@@ -49,10 +49,3 @@ class CityAppend(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     finish = models.BooleanField(default=False)
-
-
-class ZipCode(models.Model):
-    class Meta:
-        db_table = 'zip_codes'
-    zip_code = models.IntegerField(primary_key=True)
-    city = models.ForeignKey(City, on_delete=models.PROTECT)
