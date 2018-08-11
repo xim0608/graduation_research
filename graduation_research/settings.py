@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'review_based_recommender',
+    'locations',
     'django_extensions',
     'rest_framework',
     'django_filters',
