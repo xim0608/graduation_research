@@ -87,7 +87,23 @@ class Command(BaseCommand):
                     el_present = EC.visibility_of_element_located(
                         (By.XPATH, '//*[@id="REVIEWS"]'))
                     self.wait.until(el_present)
-        print("{} Page is ready. japanese review: {}".format(title, num))
+
+            # set location
+            # import pdb;pdb.set_trace()
+            self.wait.until(EC.presence_of_element_located((By.XPATH, "//div/script[@type='application/ld+json']")))
+            breadcrumb_json = self.browser.find_element_by_xpath("//div/script[@type='application/ld+json']")\
+                .get_attribute('innerHTML')
+            if breadcrumb_json:
+                breadcrumb = json.loads(breadcrumb_json)
+                for list_item in reversed(breadcrumb['itemListElement']):
+                    ta_area_id = list_item["@id"].split('-')[1].split('-')[0]
+                    c = City.objects.filter(cityappend__ta_area_id=ta_area_id)
+                    if len(c) > 0:
+                        print(c[0])
+                        self.spot.city = c[0]
+                        self.spot.save()
+                        break
+            print("{} Page is ready. japanese review: {}".format(title, num))
         return num, title
 
     def press_more_content(self):
@@ -190,18 +206,6 @@ class Command(BaseCommand):
             self.spot.save()
 
             if now_recorded_count == 0:
-                self.wait.until(EC.presence_of_element_located((By.XPATH, "//div/script[@type='application/ld+json']")))
-                breadcrumb_json = self.browser.find_element_by_xpath("//div/script[@type='application/ld+json']") \
-                    .get_attribute('innerHTML')
-                if breadcrumb_json:
-                    breadcrumb = json.loads(breadcrumb_json)
-                    for list_item in reversed(breadcrumb['itemListElement']):
-                        ta_area_id = list_item["@id"].split('-')[1].split('-')[0]
-                        c = City.objects.filter(cityappend__ta_area_id=ta_area_id)
-                        if len(c) > 0:
-                            self.spot.city = c[0]
-                            self.spot.save()
-                            break
                 self.record_reviews(page_reviews)
             else:
                 reviews_count = self.spot.total_count
@@ -220,3 +224,4 @@ class Command(BaseCommand):
             print(e)
         finally:
             self.browser.close()
+            self.spot.count = self.spot.review_set.count()
