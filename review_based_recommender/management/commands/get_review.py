@@ -23,7 +23,7 @@ class Command(BaseCommand):
         BaseCommand.__init__(self)
         chrome_options = ChromeOptions()
         chrome_options.add_argument('--user-agent=' + self.user_agent)
-        # chrome_options.add_argument('--headless')
+        chrome_options.add_argument('--headless')
         chrome_options.add_argument('--window-size=1280,1024')
         self.delay = 10
         self.browser = Chrome(options=chrome_options)
