@@ -15,5 +15,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # saitama: g298175
+        # 初期化データがあるので、このスクリプトを動かす必要はない
         pref_id = options['pref-id']
         PrefPage(pref_id).get()
