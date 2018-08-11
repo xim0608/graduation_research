@@ -76,6 +76,21 @@ class Command(BaseCommand):
             cities.append(city)
         return cities
 
+    def add_check_city_name(self, name):
+        # 鎌ヶ谷, 鎌ケ谷..etc
+        if 'ヶ' in name:
+            return name, self.toggle_ga(name)
+        elif 'ケ' in name:
+            return name + self.toggle_ga(name)
+        else:
+            return name
+
+    def toggle_ga(self, name):
+        if 'ヶ' in name:
+            return name.replace('ヶ', 'ケ')
+        elif 'ケ' in name:
+            return name.replace('ケ', 'ヶ')
+
     def add_arguments(self, parser):
         parser.add_argument(
             '--pref-id', dest='pref-id', required=True,
@@ -100,8 +115,9 @@ class Command(BaseCommand):
             print(e)
         finally:
             self.browser.close()
+        cities_name_list = list(map(lambda c: self.add_check_city_name(c.name), City.objects.filter(prefecture__name=self.pref_name)))
 
-        city_names = ''.join(list(map(lambda c: c.name, City.objects.filter(prefecture__name=self.pref_name))))
+        city_names = ''.join(cities_name_list)
         for city in cities:
             print(city)
             c = None
@@ -117,5 +133,7 @@ class Command(BaseCommand):
             else:
                 # 神奈川には緑区が2つある
                 c = City.objects.filter(name=city['name'], prefecture__name=self.pref_name)
+                if len(c) < 1:
+                    c = City.objects.filter(name=self.toggle_ga(city['name']), prefecture__name=self.pref_name)
                 c = c[0]
             city_append = CityAppend.objects.get_or_create(city=c, ta_area_id=city['id'])
