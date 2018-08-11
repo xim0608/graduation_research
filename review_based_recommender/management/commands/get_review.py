@@ -182,8 +182,14 @@ class Command(BaseCommand):
             count = 10
             now_recorded_count = self.spot.count
             print(now_recorded_count)
+            page_reviews, first_page_info = self.get_page_by_sel(url, first_page=True)
+            title = first_page_info[1]
+            reviews_count = first_page_info[0]
+            self.spot.title = title
+            self.spot.total_count = reviews_count
+            self.spot.save()
+
             if now_recorded_count == 0:
-                page_reviews, first_page_info = self.get_page_by_sel(url, first_page=True)
                 self.wait.until(EC.presence_of_element_located((By.XPATH, "//div/script[@type='application/ld+json']")))
                 breadcrumb_json = self.browser.find_element_by_xpath("//div/script[@type='application/ld+json']") \
                     .get_attribute('innerHTML')
@@ -196,14 +202,11 @@ class Command(BaseCommand):
                             self.spot.city = c[0]
                             self.spot.save()
                             break
-                title = first_page_info[1]
-                page_num = first_page_info[0]
-                self.record_first_page_info(title, page_num)
                 self.record_reviews(page_reviews)
             else:
-                page_num = self.spot.total_count
+                reviews_count = self.spot.total_count
                 count = now_recorded_count
-            crawling_url_list = self.make_list(url, page_num, count)
+            crawling_url_list = self.make_list(url, reviews_count, count)
             for url in crawling_url_list:
                 page_reviews, first_page_info = self.get_page_by_sel(url)
                 self.record_reviews(page_reviews)
