@@ -155,16 +155,16 @@ class Command(BaseCommand):
         return url_list
 
     def record_reviews(self, reviews):
+        update_counter = 0
         for review in reviews:
-            r = Review.objects.get_or_create(username=review['uid'], title=review['title'], content=review['content'],
-                                             rating=int(review['rating']), spot=self.spot)[0]
-            r.save()
-        self.spot.update_count(count=len(reviews))
+            r_s = Review.objects.filter(username=review['uid'], title=review['title'], content=review['content'],
+                                        rating=int(review['rating']), spot=self.spot)
+            if len(r_s) < 1:
+                r = Review.objects.create(username=review['uid'], title=review['title'], content=review['content'],
+                                          rating=int(review['rating']), spot=self.spot)
+                update_counter += 1
 
-    def record_first_page_info(self, title, page_num):
-        self.spot.title = title
-        self.spot.total_count = page_num
-        self.spot.save()
+        self.spot.update_count(count=update_counter)
 
     def add_arguments(self, parser):
         parser.add_argument(
