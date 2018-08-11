@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...models import Spot, SpreadsheetData, Review
+from ...models import Review
 import logging
 from logging import getLogger, StreamHandler, Formatter, FileHandler
 import slackweb

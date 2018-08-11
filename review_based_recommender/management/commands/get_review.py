@@ -4,14 +4,12 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
-from retry import retry
 from ...models import Spot, Review, ZipCode, City
 import sys
 import os
 import traceback
 import json
 from selenium.webdriver.common.action_chains import ActionChains
-import time
 
 
 class Command(BaseCommand):
@@ -31,7 +29,6 @@ class Command(BaseCommand):
         self.actions = ActionChains(self.browser)
         self.spot = None
 
-    # @retry((TimeoutException, NoSuchElementException), tries=3, delay=2)
     def get_review_volume(self, first_page):
         print('try to get review volume')
         num = 0

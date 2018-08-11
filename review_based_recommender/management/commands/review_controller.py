@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...models import Spot, Review, SpreadsheetData
+from ...models import Spot
 import subprocess
 import random
 import os

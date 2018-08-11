@@ -1,11 +1,8 @@
 from django.core.management.base import BaseCommand
 from selenium.webdriver import Chrome, ChromeOptions
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, NoSuchElementException, WebDriverException
+from selenium.common.exceptions import WebDriverException
 from review_based_recommender.models import City, CityAppend
-from retry import retry
 import sys
 import os
 import traceback
