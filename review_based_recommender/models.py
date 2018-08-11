@@ -9,6 +9,8 @@ from django.dispatch import receiver
 
 
 class Spot(models.Model):
+    class Meta:
+        db_table = 'spots'
     base_id = models.CharField(max_length=200, null=True, blank=True)
     title = models.CharField(max_length=200, null=True, blank=True)
     url = models.CharField(max_length=200, unique=True)
@@ -77,6 +79,8 @@ class SpotImage(models.Model):
 
 
 class Review(models.Model):
+    class Meta:
+        db_table = 'reviews'
     username = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
     content = models.TextField()
