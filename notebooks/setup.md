@@ -14,6 +14,18 @@ ln -s /usr/bin/pip3.6 /usr/bin/pip3
 pip3 install pipenv
 git clone https://github.com/xim0608/graduation_research.git
 cd graduation_research
+
+
+rpm -ivh http://packages.groonga.org/centos/groonga-release-1.1.0-1.noarch.rpm
+yum -y install mecab mecab-devel mecab-ipadic git make curl xz
+
+# ローカルで生成してscpでサーバに送信(メモリ不足でサーバ上ではコンパイルできない)
+git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git
+cd mecab-ipadic-neologd
+./bin/install-mecab-ipadic-neologd -n
+scp -r /usr/local/lib/mecab/dic/mecab-ipadic-neologd worker01.idcf:/usr/lib/mecab/dic/
+
+
 yum -y install python-devel mysql-devel gcc
 pipenv --python 3.6
 pipenv install
@@ -34,4 +46,6 @@ enabled=1
 gpgcheck=1
 gpgkey=https://dl.google.com/linux/linux_signing_key.pub
 
+yum update
+yum install google-chrome-stable
 ```
