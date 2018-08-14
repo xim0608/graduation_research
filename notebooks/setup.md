@@ -3,6 +3,7 @@
 1. s1を建てた後、ファイアウォールとポートフォワードを設定して、sshできるようにする
 2. 下記ライブラリをインストールしていく
 ```
+yum -y groupinstall "Development Tools"
 yum remove mariadb-libs
 yum install -y https://centos7.iuscommunity.org/ius-release.rpm
 yum install python36u python36u-libs python36u-devel python36u-pip
