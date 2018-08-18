@@ -21,6 +21,7 @@ class Spot(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_updatable = models.BooleanField(default=False)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
+    valid_area = models.BooleanField(default=False)
 
     def __str__(self):
         if self.count != 0:
