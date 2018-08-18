@@ -49,3 +49,6 @@ gpgkey=https://dl.google.com/linux/linux_signing_key.pub
 yum update
 yum install google-chrome-stable
 ```
+
+3. jenkins slaveの設定をする
+jenkins userからworker サーバーへsshできるようにしておく

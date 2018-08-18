@@ -10,6 +10,10 @@ import sys
 import json
 import os
 import traceback
+import slackweb
+
+
+slack = slackweb.Slack(url=os.environ.get('SLACK_WEBHOOK_URL'))
 
 
 class PrefPage:
@@ -172,6 +176,9 @@ class CityPage:
         elements = self.browser.find_elements_by_xpath('//*[@class="attraction_clarity_cell"]')
         spots = []
         last_page_num = 0
+        if len(elements) == 0:
+            print('no spots in this area')
+            return last_page_num, []
         if first_page:
             last_page_number = elements[0].find_elements_by_xpath('//*[@class="pageNumbers"]/a[position()=last()]')
             if len(last_page_number) > 0:
@@ -242,6 +249,11 @@ class CityPage:
         print(base_url)
         try:
             last_page_num, spots = self.get_page(base_url, first_page=True)
+            if last_page_num == 0 and spots == []:
+                self.city.cityappend.finish = True
+                self.city.cityappend.save()
+                print('no spots in {}'.format(self.city.name))
+                raise Exception
             url = self.browser.current_url
             self.save_spots(spots)
             url_list = []
@@ -266,6 +278,7 @@ class CityPage:
             self.city.cityappend.save()
         finally:
             self.browser.close()
+            slack.notify(text="finish city :{}, count: {}".format(self.city.name, self.city.spot_set.count()))
         print(self.counter)
 
 
@@ -354,6 +367,7 @@ class SpotPage:
                     if len(c) > 0:
                         print(c[0])
                         self.spot.city = c[0]
+                        self.spot.valid_area = True
                         self.spot.save()
                         break
             print("{} Page is ready. japanese review: {}".format(title, num))
