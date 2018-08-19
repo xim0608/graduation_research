@@ -400,7 +400,11 @@ class SpotPage:
 
     def get_page_by_sel(self, url, first_page=False):
         print(url)
-        self.browser.get(url)
+        try:
+            self.browser.get(url)
+        except TimeoutException:
+            print('timeout at line 406')
+            self.browser.refresh()
 
         self.check_popup()
         num, title = self.get_review_volume(first_page)
@@ -411,7 +415,7 @@ class SpotPage:
                 (By.XPATH, '//span[contains(text(), "さらに表示") and @class="taLnk ulBlueLinks"]'))
             self.wait.until(invisible_more_content)
         except TimeoutException:
-            print("timeout line 80")
+            print("timeout at line 418")
             self.press_more_content()
         elements = self.browser.find_elements_by_class_name('review-container')
         reviews = []
@@ -421,7 +425,7 @@ class SpotPage:
                     (By.XPATH, '//span[contains(text(), "さらに表示") and @class="taLnk ulBlueLinks"]'))
                 self.wait.until(invisible_more_content)
             except TimeoutException:
-                print("timeout line 94")
+                print("timeout at line 428")
                 self.press_more_content()
 
             uids = element.find_elements_by_xpath('.//div[@class="username mo"]')
