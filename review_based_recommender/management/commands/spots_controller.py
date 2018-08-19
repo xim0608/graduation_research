@@ -20,11 +20,22 @@ class Command(BaseCommand):
         # 市内スポット一覧ページからスポットのurlを取得
         # mod: 0 or 1
         mod = int(options['mod'])
-        do_flag = True
-        while do_flag:
-            remained_city = CityAppend.objects.annotate(idmod2=F('city_id') % 2).filter(idmod2=mod, finish=False).first()
-            subprocess.call(self.base_command + [remained_city.ta_area_id])
-            time.sleep(2)
-            if CityAppend.objects.annotate(idmod2=F('city_id') % 2).filter(idmod2=mod, finish=False).count() == 0:
-                do_flag = False
-                print('no more cities')
+        if mod == 0 or mod == 1:
+            do_flag = True
+            while do_flag:
+                remained_city = CityAppend.objects.annotate(idmod2=F('city_id') % 2).filter(idmod2=mod,
+                                                                                            finish=False).first()
+                subprocess.call(self.base_command + [remained_city.ta_area_id])
+                time.sleep(2)
+                if CityAppend.objects.annotate(idmod2=F('city_id') % 2).filter(idmod2=mod, finish=False).count() == 0:
+                    do_flag = False
+                    print('no more cities')
+        else:
+            do_flag = True
+            while do_flag:
+                remained_city = CityAppend.objects.filter(finish=False).first()
+                subprocess.call(self.base_command + [remained_city.ta_area_id])
+                time.sleep(2)
+                if CityAppend.objects.filter(finish=False).count() == 0:
+                    do_flag = False
+                    print('no more cities')
