@@ -469,12 +469,11 @@ class SpotPage:
             self.spot.total_count = reviews_count
             self.spot.save()
 
-            if now_recorded_count == 0:
-                self.record_reviews(page_reviews)
-            else:
-                reviews_count = self.spot.total_count
-                count = now_recorded_count
-            crawling_url_list = self.make_list(url, reviews_count, count)
+            if self.spot.count == self.spot.total_count:
+                return True
+            self.record_reviews(page_reviews)
+            reviews_count = self.spot.total_count
+            crawling_url_list = self.make_list(url, reviews_count, 0)
             for url in crawling_url_list:
                 page_reviews, first_page_info = self.get_page_by_sel(url)
                 self.record_reviews(page_reviews)
