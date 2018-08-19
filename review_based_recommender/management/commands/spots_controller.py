@@ -36,7 +36,7 @@ class Command(BaseCommand):
                     CityPage(remained_city.ta_area_id).get()
                 except:
                     print('errored')
-                    ta_slack.notify(text="error in crawl city: {}, id: {}, host: {}".format(remained_city.city.name, remained_city.city.ta_area_id, gethostname()))
+                    ta_slack.notify(text="error in crawl city: {}, id: {}, host: {}".format(remained_city.city.name, remained_city.ta_area_id, gethostname()))
                 time.sleep(2)
                 if CityAppend.objects.annotate(idmod2=F('city_id') % 2).filter(idmod2=mod, finish=False).count() == 0:
                     do_flag = False
@@ -49,7 +49,7 @@ class Command(BaseCommand):
                     CityPage(remained_city.ta_area_id).get()
                 except:
                     print('errored')
-                    ta_slack.notify(text="error in crawl city: {}, id: {}, host: {}".format(remained_city.city.name, remained_city.city.ta_area_id, gethostname()))
+                    ta_slack.notify(text="error in crawl city: {}, id: {}, host: {}".format(remained_city.city.name, remained_city.ta_area_id, gethostname()))
                 time.sleep(2)
                 if CityAppend.objects.filter(finish=False).count() == 0:
                     do_flag = False
