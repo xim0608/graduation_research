@@ -11,9 +11,12 @@ import json
 import os
 import traceback
 import slackweb
+from socket import gethostname
 
 
-slack = slackweb.Slack(url=os.environ.get('SLACK_WEBHOOK_URL'))
+ta_slack = slackweb.Slack(url=os.environ.get('SLACK_WEBHOOK_URL'))
+ta_spot_slack = slackweb.Slack(url=os.environ.get('SLACK_WEBHOOK_URL_2'))
+
 
 
 class PrefPage:
@@ -278,7 +281,7 @@ class CityPage:
             self.city.cityappend.save()
         finally:
             self.browser.close()
-            slack.notify(text="finish city :{}, count: {}".format(self.city.name, self.city.spot_set.count()))
+            ta_slack.notify(text="finish city :{}, count: {}, host: {}".format(self.city.name, self.city.spot_set.count(), gethostname()))
         print(self.counter)
 
 
@@ -484,5 +487,4 @@ class SpotPage:
         finally:
             self.browser.close()
             self.spot.count = self.spot.review_set.count()
-
-
+            ta_spot_slack.notify(text="finish spot :{}, count: {}, host: {}".format(self.spot.name, self.spot.count, gethostname()))
