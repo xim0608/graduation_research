@@ -27,9 +27,8 @@ class Command(BaseCommand):
         # mod: 0 or 1
         mod = int(options['mod'])
         if mod == 0 or mod == 1:
-            do_flag = True
-            while do_flag:
-                remained_spot = Spot.objects.annotate(idmod2=F('id') % 2).filter(is_updatable=True, idmod2=mod).first()
+            remained_spots = Spot.objects.annotate(idmod2=F('id') % 2).filter(is_updatable=True, idmod2=mod)
+            for remained_spot in remained_spots:
                 try:
                     SpotPage(remained_spot.base_id).get()
                     print('finish spots')
@@ -37,17 +36,15 @@ class Command(BaseCommand):
                     print('errored')
                     print("type: {}".format(type(e)))
                     print("msg: {}".format(str(e)))
-                    ta_spot_slack.notify(text="error in crawl spot: {}, url: {}, host: {}".format(remained_spot.base_id,
-                                                                                                  remained_spot.url,
-                                                                                                  gethostname()))
+                    ta_spot_slack.notify(
+                        text="error in crawl spot: {}, url: {}, host: {}".format(remained_spot.base_id,
+                                                                                 remained_spot.url,
+                                                                                 gethostname()))
                 time.sleep(2)
-                if Spot.objects.annotate(idmod2=F('id') % 2).filter(is_updatable=True, idmod2=mod).count() == 0:
-                    do_flag = False
-                    print('no more cities')
+
         else:
-            do_flag = True
-            while do_flag:
-                remained_spot = Spot.objects.filter(is_updatable=True).first()
+            remained_spots = Spot.objects.filter(is_updatable=True)
+            for remained_spot in remained_spots:
                 try:
                     SpotPage(remained_spot.base_id).get()
                 except Exception as e:
@@ -58,6 +55,3 @@ class Command(BaseCommand):
                                                                                                   remained_spot.url,
                                                                                                   gethostname()))
                 time.sleep(2)
-                if Spot.objects.filter(is_updatable=True).count() == 0:
-                    do_flag = False
-                    print('no more cities')

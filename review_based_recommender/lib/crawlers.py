@@ -493,4 +493,4 @@ class SpotPage:
             if self.spot.count == self.spot.total_count:
                 self.spot.is_updatable = False
             self.spot.save()
-            ta_spot_slack.notify(text="finish spot :{}, count: {}, host: {}".format(self.spot.title, self.spot.count, gethostname()))
+            ta_spot_slack.notify(text="finish spot :{}, count: {}/{}, host: {}".format(self.spot.title, self.spot.count, self.spot.total_count, gethostname()))
