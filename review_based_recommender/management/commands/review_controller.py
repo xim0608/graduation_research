@@ -13,23 +13,4 @@ class Command(BaseCommand):
         # スポット詳細ページからレビューを取得
         do_flag = True
         while do_flag:
-            remained_tasks = Spot.remained_tasks()
-            if len(remained_tasks) > 0:
-                task = random.choice(remained_tasks)
-                subprocess.call(self.base_command + [task.base_id])
-
-            # check remain tasks and add spots
-            remained_tasks = Spot.remained_tasks()
-            if len(remained_tasks) == 0:
-                subprocess.call(['python', 'manage.py', 'spots_controller'])
-
-            # check remain tasks
-            remained_tasks = Spot.remained_tasks()
-            if len(remained_tasks) > 0:
-                do_flag = True
-            else:
-                do_flag = False
-            if os.environ.get('DEBUG') == 'TRUE':
-                pass
-            else:
-                subprocess.call("ps aux | grep chrome | grep -v grep | awk '{ print \"kill -9\", $2 }' | sh", shell=True)
+            Spot.objects.filter()
