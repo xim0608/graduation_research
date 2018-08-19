@@ -477,6 +477,7 @@ class SpotPage:
                 page_reviews, first_page_info = self.get_page_by_sel(url)
                 self.record_reviews(page_reviews)
                 page += 1
+            self.spot.is_updatable = False
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]

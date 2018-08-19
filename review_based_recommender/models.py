@@ -19,7 +19,7 @@ class Spot(models.Model):
     all_lang_total_count = models.IntegerField(default=None, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_updatable = models.BooleanField(default=False)
+    is_updatable = models.BooleanField(default=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     valid_area = models.BooleanField(default=False)
 
