@@ -479,7 +479,6 @@ class SpotPage:
                 page_reviews, first_page_info = self.get_page_by_sel(url)
                 self.record_reviews(page_reviews)
                 page += 1
-            self.spot.is_updatable = False
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
@@ -490,4 +489,7 @@ class SpotPage:
         finally:
             self.browser.close()
             self.spot.count = self.spot.review_set.count()
-            ta_spot_slack.notify(text="finish spot :{}, count: {}, host: {}".format(self.spot.name, self.spot.count, gethostname()))
+            if self.spot.count == self.spot.total_count:
+                self.spot.is_updatable = False
+            self.spot.save()
+            ta_spot_slack.notify(text="finish spot :{}, count: {}, host: {}".format(self.spot.title, self.spot.count, gethostname()))
