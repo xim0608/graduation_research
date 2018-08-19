@@ -432,7 +432,9 @@ class SpotPage:
             title = element.find_element_by_class_name('noQuotes').text
             content = element.find_element_by_class_name('partial_entry').text
             rating = element.find_element_by_class_name('ui_bubble_rating').get_attribute('class').split('_')[-1]
-            reviews.append({"uid": uid, "title": title, "content": content, "rating": rating})
+            rating_date = element.find_element_by_class_name('ratingDate').get_attribute('title')
+            review_ta_id = element.find_element_by_class_name('reviewSelector').get_attribute('data-reviewid')
+            reviews.append({"uid": uid, "title": title, "content": content, "rating": rating, "rating_date": rating_date, "ta_id": review_ta_id})
         return reviews, first_page_info
 
     @classmethod
@@ -445,11 +447,11 @@ class SpotPage:
     def record_reviews(self, reviews):
         update_counter = 0
         for review in reviews:
-            r_s = Review.objects.filter(username=review['uid'], title=review['title'], content=review['content'],
-                                        rating=int(review['rating']), spot=self.spot)
+            r_s = Review.objects.filter(ta_id=review['ta_id'], spot=self.spot)
             if len(r_s) < 1:
                 r = Review.objects.create(username=review['uid'], title=review['title'], content=review['content'],
-                                          rating=int(review['rating']), spot=self.spot)
+                                          rating=int(review['rating']), rating_date=review['rating_date'],
+                                          ta_id=review['ta_id'], spot=self.spot)
                 update_counter += 1
 
         self.spot.update_count(count=update_counter)
@@ -473,7 +475,7 @@ class SpotPage:
                 return True
             self.record_reviews(page_reviews)
             reviews_count = self.spot.total_count
-            crawling_url_list = self.make_list(url, reviews_count, 0)
+            crawling_url_list = self.make_list(url, reviews_count, 10)
             for url in crawling_url_list:
                 page_reviews, first_page_info = self.get_page_by_sel(url)
                 self.record_reviews(page_reviews)

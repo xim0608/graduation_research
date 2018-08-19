@@ -86,6 +86,8 @@ class Review(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     rating = models.IntegerField()
+    ta_id = models.IntegerField(unique=True, default=0)
+    rating_date = models.CharField(max_length=200, default='')
     spot = models.ForeignKey(Spot, on_delete=models.CASCADE)
 
     def __str__(self):
