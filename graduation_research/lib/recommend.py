@@ -15,7 +15,11 @@ class Recommend:
         self.doc_index = similarities.docsim.MatrixSimilarity.load("{}/{}_sim".format(base_dir, method_name))
         # self.df = pickle.load(open('{}_df'.format(method_name), 'rb'))
         self.df_list = pickle.load(open('{}/{}_df_list'.format(base_dir, method_name), 'rb'))
-        self.matrix = np.load("{}/{}_matrix.npz".format(base_dir, method_name))['m']
+        if os.path.isfile("{}/{}_matrix.npz".format(base_dir, method_name)):
+            self.matrix = np.load("{}/{}_matrix.npz".format(base_dir, method_name))['m']
+        else:
+            self.matrix = self.make_matrix()
+            np.savez_compressed("{}/{}_matrix.npz".format(base_dir, method_name), m=np.matrix(self.matrix))
 
     def convert_doc_id_to_spot_id(self, doc_id):
         return self.df_list[doc_id]
