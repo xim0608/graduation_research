@@ -349,7 +349,9 @@ class SpotPage:
                     print('failed to get review volume')
                     raise TimeoutException
                 else:
-                    # TODO: add new page type notification to slack
+                    ta_spot_slack.notify(
+                        text="may be new page type spot :{}, host: {}".format(self.spot.title,
+                                                                           gethostname()))
                     print('try again...')
                     self.browser.refresh()
                     self.browser.implicitly_wait(3)
