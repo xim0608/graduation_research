@@ -493,6 +493,7 @@ class SpotPage:
             print(e)
         finally:
             self.browser.close()
+            self.browser.quit()
             self.spot.count = self.spot.review_set.count()
             if self.spot.count == self.spot.total_count:
                 self.spot.is_updatable = False
