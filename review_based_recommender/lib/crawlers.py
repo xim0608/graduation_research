@@ -12,6 +12,7 @@ import os
 import traceback
 import slackweb
 from socket import gethostname
+import pdb
 
 
 ta_slack = slackweb.Slack(url=os.environ.get('SLACK_WEBHOOK_URL'))
@@ -333,6 +334,12 @@ class SpotPage:
                         if ja[0].text == '日本語':
                             num = 0
                             break
+                    elif len(header_counts) == 0 and len(ja) == 0:
+                        reviews = self.browser.find_elements_by_xpath('//*[@id="REVIEWS"]')
+                        if len(reviews) > 0:
+                            if '最初の口コミ投稿者になりましょう' in reviews[0].text:
+                                num = 0
+                                break
                 if len(more_than_10) > 0:
                     # more than 10 reviews page
                     number = more_than_10[0]
