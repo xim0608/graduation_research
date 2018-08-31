@@ -326,11 +326,10 @@ class SpotPage:
                     # check only other languages review
                     header_counts = self.browser.find_elements_by_xpath(
                         '//*[@id="REVIEWS"]//span[@class="reviews_header_count"]')
-                    en_counts = self.browser.find_elements_by_xpath(
-                        '//label[@for="filters_detail_language_filterLang_en"]/span')
                     ja = self.browser.find_elements_by_xpath('//label[@for="filters_detail_language_filterLang_ja"]')
-                    if len(header_counts) > 0 and len(en_counts) > 0 and len(ja) > 0:
+                    if len(header_counts) > 0 and len(ja) > 0:
                         # including english, chinese,,,
+                        # check if no reviews count after nihongo
                         if ja[0].text == '日本語':
                             num = 0
                             break
