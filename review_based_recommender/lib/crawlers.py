@@ -450,7 +450,7 @@ class SpotPage:
     def record_reviews(self, reviews):
         update_counter = 0
         for review in reviews:
-            r_s = Review.objects.filter(ta_id=review['ta_id'], spot=self.spot)
+            r_s = Review.objects.filter(ta_id=review['ta_id'])
             if len(r_s) < 1:
                 r = Review.objects.create(username=review['uid'], title=review['title'], content=review['content'],
                                           rating=int(review['rating']), rating_date=review['rating_date'],
