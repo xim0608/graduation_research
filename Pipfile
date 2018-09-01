@@ -37,6 +37,7 @@ django-silk = "*"
 flickrapi = "*"
 django-cors-headers = "*"
 django-filter = "*"
+"fabric3" = "*"
 
 [dev-packages]
 
