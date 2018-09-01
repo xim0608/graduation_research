@@ -1,11 +1,11 @@
 from fabric.api import run, abort, env, cd, local
-from fabric.decorators import task
+from fabric.decorators import task, parallel
 
 
 class RemoteHandler(object):
     env.use_ssh_config = True
     env.ssh_config_path = "~/.ssh/config"
-    
+
     def pull(self):
         with cd(env.app_path):
             self.__check_no_diff()
@@ -26,6 +26,7 @@ class RemoteHandler(object):
             abort('remote error: there are some diff on git supervised files')
 
 @task
+@parallel
 def deploy():
     rh = RemoteHandler()
     rh.pull()
