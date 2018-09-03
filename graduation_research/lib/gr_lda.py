@@ -16,12 +16,12 @@ class GrLda:
         lda = models.ldamodel.LdaModel(corpus=self.corpus, id2word=self.dic, num_topics=self.num_topics, passes=self.passes)
         return lda
 
-    def check_perplexity(self, lda, test_corpus):
-        n = sum(count for doc in test_corpus for id, count in doc)
-        print("出現単語数N: ", n)
-        perplexity = np.exp2(-self.lda.log_perplexity(test_corpus))
+    def check_perplexity(self):
+        # n = sum(count for doc in self.corpus for id, count in doc)
+        # print("出現単語数N: ", n)
+        perplexity = np.exp2(-self.lda.log_perplexity(self.corpus))
         # https://www.slideshare.net/hoxo_m/perplexity
-        print("perplexity:", perplexity)
+        return perplexity
 
     def get_topic_words(self, topic_id):
         for t in self.lda.get_topic_terms(topic_id):
