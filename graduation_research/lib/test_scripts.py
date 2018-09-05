@@ -17,8 +17,14 @@ def optimize_num_topics():
         grlda = GrLda(corpus=corpus, dic=dic, num_topics=50, passes=10)
         perplexity = grlda.check_perplexity()
         perplexities[topic_num] = perplexity
-        notify(perplexities)
+        progress_report(perplexity, topic_num, 50)
     notify(perplexities)
+
+
+def progress_report(result, count, total):
+    slack = slackweb.Slack(url=os.environ.get('SLACK_WEBHOOK_URL'))
+    slack.notify(text="script progress report: {}\nresult: {}\ncount: {}/{}"
+                 .format(inspect.stack()[1][3], result, count, total))
 
 
 def notify(result):
