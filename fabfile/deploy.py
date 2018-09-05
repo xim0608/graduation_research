@@ -18,7 +18,7 @@ class RemoteHandler(object):
 
     def __install_required_package(self):
         with cd(env.app_path):
-            run('pipenv sync')
+            run('pipenv install --ignore-pipfile')
 
     def __check_no_diff(self):
         res = run('git ls-files -m')
