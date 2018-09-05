@@ -8,4 +8,4 @@ def production():
     env.app_path = home_dir + '/graduation_research'
     env.daemon_name = 'graduation_research daemon'
     env.user = 'gr_user'
-    env.hosts = ['worker01.idcf', 'worker02.idcf', 'worker03.idcf']
+    env.hosts = ['worker01.idcf', 'worker02.idcf']
