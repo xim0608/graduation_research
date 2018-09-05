@@ -2,8 +2,12 @@ import MeCab
 from graduation_research.lib import word_preprocess
 import urllib.request
 import unicodedata
+from graduation_research import settings
 
-mecab = MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd')
+if settings.DEBUG:
+    mecab = MeCab.Tagger('-d /usr/local/lib/mecab/dic/mecab-ipadic-neologd')
+else:
+    mecab = MeCab.Tagger('-d /usr/lib/mecab/dic/mecab-ipadic-neologd')
 mecab.parse('')
 
 
