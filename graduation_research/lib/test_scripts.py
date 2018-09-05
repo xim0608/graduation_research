@@ -15,7 +15,9 @@ def optimize_num_topics():
         dic = gr_docs.dictionary(no_above=5, no_below=0.2)
         corpus = gr_docs.corpus(dic=dic)
         grlda = GrLda(corpus=corpus, dic=dic, num_topics=50, passes=10)
-        perplexities[topic_num] = grlda.check_perplexity()
+        perplexity = grlda.check_perplexity()
+        perplexities[topic_num] = perplexity
+        notify(perplexities)
     notify(perplexities)
 
 
