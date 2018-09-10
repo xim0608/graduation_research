@@ -29,7 +29,7 @@ services:
     networks:
       - gr_network
     volumes:
-      - ./docker/mysql/mysql_data:/var/lib/mysql:cached
+      - ./docker/mysql/mysql_data:/var/lib/mysql
       - ./docker/mysql/sqls/:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: password
