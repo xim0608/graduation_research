@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'django_filters',
+    'django_elasticsearch_dsl',
 ]
 
 MIDDLEWARE = [
@@ -174,3 +175,9 @@ REST_FRAMEWORK = {
 SILKY_AUTHENTICATION = True  # User must login
 SILKY_AUTHORISATION = True  # User must have permissions
 LOGIN_URL = '/gr_admin'
+
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'elasticsearch:9200'
+    },
+}
