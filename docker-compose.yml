@@ -44,6 +44,9 @@ services:
      - 9300
     volumes:
       - ./docker/elasticsearch/es_data/:/usr/share/elasticsearch/data/
+      - ./docker/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    environment:
+      - discovery.type=single-node
     logging:
       driver: "json-file"
       options:
