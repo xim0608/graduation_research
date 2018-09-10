@@ -18,3 +18,5 @@ RUN { \
     echo '[mysql]'; \
     echo 'default-character-set=utf8'; \
 } > /etc/mysql/conf.d/charset.cnf
+
+COPY ./docker/mysql/sqls/graduation_research.sql /docker-entrypoint-initdb.d/graduation_research.sql

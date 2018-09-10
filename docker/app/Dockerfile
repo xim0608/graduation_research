@@ -38,8 +38,8 @@ COPY ./Pipfile /app
 COPY ./Pipfile.lock /app
 WORKDIR /app
 
-RUN pipenv install
+RUN pipenv install --system --deploy --ignore-pipfile
 
-ENTRYPOINT ["pipenv", "run"]
+#ENTRYPOINT ["pipenv", "run"]
 
 CMD ["python", "main.py"]

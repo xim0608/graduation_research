@@ -33,4 +33,5 @@ yarn-error.log*
 !1_create_database.sql
 
 **/mysql_data/*
+**/es_data/*
 !.keep
