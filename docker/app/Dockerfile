@@ -40,6 +40,4 @@ WORKDIR /app
 
 RUN pipenv install --system --deploy --ignore-pipfile
 
-#ENTRYPOINT ["pipenv", "run"]
-
 CMD ["python", "main.py"]
