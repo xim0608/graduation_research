@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./docker/app/Dockerfile
+    volumes:
+      - ./:/app:cached
+      - ./static/:/app/static:cached
+    expose:
+      - '8000'
+    env_file:
+      - ./docker/app/.env
+    links:
+      - mysql
+  jumanpp-api:
+    image: gkmr/jumanpp-api
+    ports:
+      - '4567:4567'
+  mysql:
+    restart: always
+    build:
+      context: ./
+      dockerfile: ./docker/mysql/Dockerfile
+    volumes:
+      - ./docker/mysql/mysql_data:/var/lib/mysql:cached
+      - ./docker/mysql/sqls:/docker-entrypoint-initdb.d:cached
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
