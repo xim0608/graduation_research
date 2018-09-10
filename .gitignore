@@ -28,3 +28,9 @@ yarn-error.log*
 
 /static/build/*
 /templates/*
+
+*.sql
+
+**/mysql_data/*
+**/es_data/*
+!.keep
