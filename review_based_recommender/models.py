@@ -1,4 +1,5 @@
 from django.db import models
+from djongo import models as djongo_models
 from oauth2client.service_account import ServiceAccountCredentials
 from locations.models import City
 import gspread
@@ -187,3 +188,36 @@ class SpreadsheetData():
         for index, row_value in enumerate(row_values):
             h[cls.data_column[index]] = row_value
         return h
+
+
+# mongodb models
+class AnalyzedReviewDocument(djongo_models.Model):
+    tokenized_neologd = djongo_models.ListField()
+    tokenized_jumanpp = djongo_models.ListField()
+
+    class Meta:
+        abstract = True
+
+
+class ReviewDocument(djongo_models.Model):
+    review_id = djongo_models.IntegerField(primary_key=True)
+    title = djongo_models.TextField()
+    content = djongo_models.TextField()
+    author = djongo_models.CharField(max_length=255)
+    analyzed_datas = djongo_models.EmbeddedModelField(
+        model_container=AnalyzedReviewDocument,
+    )
+    rating = djongo_models.IntegerField()
+
+    class Meta:
+        abstract = True
+
+
+class SpotDocument(djongo_models.Model):
+    spot_id = djongo_models.IntegerField(primary_key=True)
+    city_id = djongo_models.IntegerField()
+    name = djongo_models.CharField(max_length=255)
+    num_of_reviews = djongo_models.IntegerField()
+    reviews = djongo_models.ArrayModelField(
+        model_container=ReviewDocument
+    )
