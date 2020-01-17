@@ -24,12 +24,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # スポット詳細ページからレビューを取得
         # 市内スポット一覧ページからスポットのurlを取得
-        # mod: 0/2, 1/2 or 0/3, 1/3, 2/3...etc
-        if '/' in options['mod']:
-            remain, mod = options['mod'].split('/')
-            remain = int(remain)
-            mod = int(mod)
-            remained_spots = Spot.objects.annotate(idmod2=F('id') % mod).filter(is_updatable=True, idmod2=remain)
+        # mod: 0 or 1
+        mod = int(options['mod'])
+        if mod == 0 or mod == 1:
+            remained_spots = Spot.objects.annotate(idmod2=F('id') % 2).filter(is_updatable=True, idmod2=mod)
             for remained_spot in remained_spots:
                 try:
                     SpotPage(remained_spot.base_id).get()
