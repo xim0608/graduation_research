@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'django_filters',
+    'djongo'
 ]
 
 MIDDLEWARE = [
@@ -94,12 +95,21 @@ DATABASES = {
         'USER': os.environ['DATABASE_USER'],
         'PASSWORD': os.environ['DATABASE_PASS'],
         'HOST': os.environ['DATABASE_HOST'],
-        'PORT': '3306',
+        'PORT': os.environ['DATABASE_PORT'],
         'OPTIONS': {
             'charset': 'utf8mb4',
         },
+    },
+    'default_mongo':{
+        'ENGINE': 'djongo',
+        'NAME': os.environ['DATABASE_NAME'],
+        'USER': os.environ['MONGODB_USER'],
+        'PASSWORD': os.environ['MONGODB_PASS'],
+        'HOST': os.environ['MONGODB_HOST'],
+        'PORT': int(os.environ['MONGODB_PORT'])
     }
 }
+DATABASE_ROUTERS = ['graduation_research.db_router.DbRouter']
 
 
 CACHES = {

@@ -39,6 +39,7 @@ django-cors-headers = "*"
 django-filter = "*"
 "fabric3" = "*"
 elasticsearch-dsl = ">=5.0,<6.0"
+djongo = "*"
 
 [dev-packages]
 

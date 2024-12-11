@@ -68,12 +68,4 @@ RUN apt-get install -y --fix-missing zlib1g-dev &&\
 
 RUN pip install pipenv
 
-RUN mkdir /app
-
-COPY ./Pipfile /app
-COPY ./Pipfile.lock /app
-WORKDIR /app
-
-RUN pipenv install --system --deploy --ignore-pipfile
-
-CMD ["python", "main.py"]
+CMD /bin/bash
